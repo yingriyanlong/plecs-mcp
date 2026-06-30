@@ -1,0 +1,47 @@
+<!--
+  plecs-mcp evaluation set (mcp-builder Phase 4).
+  Each answer was verified on live PLECS 4.9.5 (RPC port 1080) using the MCP tools.
+  Items 1-6, 9 require a live PLECS connection; 7, 8, 10 are offline (KB/templates).
+-->
+<evaluation>
+  <qa_pair>
+    <question>Build an open-loop buck converter with input Vi=24 V and duty D=0.5, simulate it, and report the steady-state output voltage rounded to the nearest volt.</question>
+    <answer>12</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Build a boost converter with Vi=24 V and D=0.5, simulate, and report the steady-state output voltage rounded to the nearest volt.</question>
+    <answer>48</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Build an inverting buck-boost with Vi=24 V and D=0.5, simulate, and report the steady-state output voltage (with sign) rounded to the nearest volt.</question>
+    <answer>-24</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>For the open-loop buck (Vi=24), sweep the duty cycle D and report the steady-state output voltage at D=0.4, rounded to one decimal place.</question>
+    <answer>9.6</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Build the voltage-mode closed-loop buck with reference Vref=15 V and report the regulated steady-state output rounded to the nearest volt.</question>
+    <answer>15</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>For the closed-loop buck, change the reference to Vref=10 V (model variable) and report the regulated steady-state output rounded to the nearest volt.</question>
+    <answer>10</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>How many terminals does a Mosfet component have in the plecs-mcp knowledge base?</question>
+    <answer>3</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>How many bundled PLECS demo templates have the word "flyback" in their name?</question>
+    <answer>3</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Run the control-to-output transfer-function analysis of buck_converter_with_analysis_tools and report its DC gain in dB rounded to the nearest integer.</question>
+    <answer>29</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>How many bundled PLECS demo templates have the word "inverter" in their name or component types?</question>
+    <answer>12</answer>
+  </qa_pair>
+</evaluation>

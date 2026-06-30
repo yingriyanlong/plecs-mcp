@@ -145,3 +145,18 @@ is future work; running them on existing/demo models works now.
 Honest limit: AUTHORING thermal/magnetic models from scratch (loss tables, thermal
 port netlist, permeance network) is not yet generated — start from a demo via
 plecs_list_templates. Running + reading them works now.
+
+## M6 hardening + evaluations (2026-06-30) — v0.5.0
+- eval/evaluation.xml: 10 verifiable tasks (mcp-builder Phase 4), each checked on
+  live PLECS (build/sim/sweep/analysis) or offline (KB/templates). eval/README.md.
+- CHANGELOG.md (M0–M6), comprehensive README with full tool reference + auto-layout
+  authoring example. Version bumped 0.1.0 -> 0.5.0.
+- Final verification: 17 offline tests pass; stdio server launches and registers
+  all 16 tools (plecs_status/load/close/set/simulate/analyze_waveform/get_waveform/
+  plot_waveform/scan_parameter/run_analysis + build/validate/list_component_types/
+  describe_component/list_templates/describe_template).
+
+## Status: M0–M6 complete and verified on live PLECS 4.9.5.
+Remaining future work (documented honestly): control-block & thermal/magnetic
+auto-layout; thermal/magnetic authoring (loss tables, permeance nets); generating
+AC-analysis blocks; broader auto-layout (bridges, 3-phase).
