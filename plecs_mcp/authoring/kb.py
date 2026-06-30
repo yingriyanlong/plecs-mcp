@@ -59,9 +59,32 @@ def _load_library() -> dict:
 LIBRARY = _load_library()
 
 
+
+# Domain classification for harvested LIBRARY types (keyword-based), so
+# thermal/magnetic/control/measurement parts are discoverable even without
+# curated terminal roles.
+_LIB_DOMAIN_KEYWORDS = {
+    "thermal": ["thermal", "heat", "temperature", "loss"],
+    "magnetic": ["magnet", "winding", "permeance", "flux", "reluctance", "transformer", "coupl"],
+    "control": ["gain", "sum", "integ", "transfer", "saturat", "relational", "triang",
+                "pid", "product", "compar", "delay", "step", "ramp", "demux", "mux"],
+    "measurement": ["meter", "probe", "scope", "display"],
+}
+
+
+def _lib_domain(t: str) -> str | None:
+    tl = t.lower()
+    for dom, ws in _LIB_DOMAIN_KEYWORDS.items():
+        if any(w in tl for w in ws):
+            return dom
+    return None
+
+
 def known_types(domain: str | None = None) -> list[str]:
     if domain:
-        return sorted(t for t, v in CORE.items() if v.get("domain") == domain)
+        core = {t for t, v in CORE.items() if v.get("domain") == domain}
+        lib = {t for t in LIBRARY if _lib_domain(t) == domain}
+        return sorted(core | lib)
     return sorted(set(CORE) | set(LIBRARY))
 
 
@@ -72,8 +95,9 @@ def describe(type_name: str) -> dict | None:
                 "terminals": c["terminals"], "params": c["params"]}
     if type_name in LIBRARY:
         lib = LIBRARY[type_name]
-        return {"source": "library", "terminals": lib.get("terminals"),
-                "params": lib.get("params", []), "seen_in_demos": lib.get("count")}
+        return {"source": "library", "domain": _lib_domain(type_name),
+                "terminals": lib.get("terminals"), "params": lib.get("params", []),
+                "seen_in_demos": lib.get("count")}
     return None
 
 

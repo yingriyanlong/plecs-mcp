@@ -127,3 +127,21 @@ is marginal; proper compensator design wants the AC/bode tools in M4.
 Note: running an analysis needs it defined in the model (PLECS Analysis dialog +
 SmallSignalPerturbation/Response blocks for AC). Generating analyses from scratch
 is future work; running them on existing/demo models works now.
+
+## M5 thermal & magnetic (2026-06-30)
+- The simulate/analyze/scan tools are domain-agnostic and already run thermal &
+  magnetic models (verified: buck_converter_with_thermal_model loads + simulates
+  through the MCP).
+- KB now classifies the harvested LIBRARY by inferred domain, so
+  plecs_list_component_types("thermal"|"magnetic") work and describe tags domain.
+  Thermal: HeatSink, ThermalResistor, ThermalChain, ConstantTemperature(/Gnd),
+  ThermalGround, HeatFlowMeter, SwitchLossCalculator. Magnetic: Transformer,
+  MagneticInterface.
+- docs/thermal-magnetic-notes.md records the measurement signal names (IGBT/Diode
+  "... junction temp", HeatSink "Temperature", HeatFlowMeter "Measured heat flow",
+  DCVoltageSource "Source power").
+- Offline pytest: 17 passed.
+
+Honest limit: AUTHORING thermal/magnetic models from scratch (loss tables, thermal
+port netlist, permeance network) is not yet generated — start from a demo via
+plecs_list_templates. Running + reading them works now.
