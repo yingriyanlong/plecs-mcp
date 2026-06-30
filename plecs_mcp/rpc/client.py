@@ -84,3 +84,13 @@ def set_param(component: str, parameter: str, value, cfg: Optional[Config] = Non
 def get_param(component: str, parameter: str, cfg: Optional[Config] = None):
     """Get a component parameter (plecs.get)."""
     return _proxy(cfg).plecs.get(component, parameter)
+
+
+def analyze(name: str, analysis: str, cfg: Optional[Config] = None):
+    """Run a named Analysis defined in the model (plecs.analyze).
+
+    Returns the raw result dict. Frequency-response analyses (ACSweep,
+    ImpulseResponseAnalysis, MultitoneAnalysis) return {'F': [...], 'Gr': [[...]],
+    'Gi': [[...]]}; SteadyStateAnalysis just sets the operating point.
+    """
+    return _proxy(cfg).plecs.analyze(name, analysis)

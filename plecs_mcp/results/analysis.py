@@ -79,3 +79,23 @@ def metrics(time, values, names=None, target=None, steady_frac=0.2):
         else:
             out[m] = None
     return out
+
+
+def bode(F, Gr, Gi):
+    """Turn a PLECS frequency-response result into magnitude(dB)/phase(deg) plus
+    DC gain, gain-crossover frequency and phase margin."""
+    import math
+    f = np.asarray(F, dtype=float)
+    gr = np.asarray(Gr[0] if (Gr and isinstance(Gr[0], list)) else Gr, dtype=float)
+    gi = np.asarray(Gi[0] if (Gi and isinstance(Gi[0], list)) else Gi, dtype=float)
+    mag_db = 20 * np.log10(np.sqrt(gr ** 2 + gi ** 2))
+    phase = np.degrees(np.unwrap(np.arctan2(gi, gr)))
+    fc = pm = None
+    for i in range(1, len(f)):
+        if mag_db[i - 1] > 0 >= mag_db[i]:
+            t = (0 - mag_db[i - 1]) / (mag_db[i] - mag_db[i - 1])
+            fc = float(10 ** (math.log10(f[i - 1]) + t * (math.log10(f[i]) - math.log10(f[i - 1]))))
+            pm = float(180 + (phase[i - 1] + t * (phase[i] - phase[i - 1])))
+            break
+    return {"f": f.tolist(), "mag_db": mag_db.tolist(), "phase_deg": phase.tolist(),
+            "dc_gain_db": float(mag_db[0]), "gain_crossover_hz": fc, "phase_margin_deg": pm}

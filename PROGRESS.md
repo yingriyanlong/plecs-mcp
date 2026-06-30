@@ -110,3 +110,20 @@ built a FLAT (no-subsystem) closed loop the engine can generate.
 Honest limits: control-block auto-layout is power-focused (control parts are
 strung along the top rail — functional, not pretty). A single PI on a high-Q LC
 is marginal; proper compensator design wants the AC/bode tools in M4.
+
+## M4 simulation scripts & analyses (2026-06-30)
+- plecs_scan_parameter: server-side sweep of a ModelVar over a range; simulates
+  each, extracts a metric, returns (value, metric) table + optimum; per-run errors
+  captured gracefully. Verified: buck D-sweep 0.2..0.8 -> Vo=D*Vin for valid runs
+  (high-D runs hit a PLECS "state discontinuity" and were recorded, not crashed).
+- plecs_run_analysis: runs a named PLECS Analysis (SteadyState / ACSweep /
+  ImpulseResponse / Multitone) via plecs.analyze. Frequency responses -> bode
+  (dc_gain_db, gain_crossover_hz, phase_margin_deg) + result handle (sig0=mag dB,
+  sig1=phase deg). rpc.client.analyze + results.analysis.bode added.
+  Verified on buck_converter_with_analysis_tools: control-to-output TF 300 pts,
+  DC gain 29.0 dB, crossover 5.42 kHz (bare LC plant TF).
+- Offline pytest: 14 passed (added synthetic bode test).
+
+Note: running an analysis needs it defined in the model (PLECS Analysis dialog +
+SmallSignalPerturbation/Response blocks for AC). Generating analyses from scratch
+is future work; running them on existing/demo models works now.

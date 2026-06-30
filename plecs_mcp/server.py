@@ -16,6 +16,7 @@ from mcp.server.fastmcp import FastMCP
 from .config import load_config
 from .results import STORE
 from .results.analysis import metrics as _metrics
+from .results.analysis import bode as _bode
 from .results.analysis import to_signals
 from .results.plot import plot_series
 from .rpc import client
@@ -160,6 +161,69 @@ def plecs_plot_waveform(handle: str, signals: Optional[list] = None,
         return {"ok": False, "error": "no valid signals selected"}
     path = plot_series(rec["time"], series, out_path=out_path, title=title)
     return {"ok": True, "handle": handle, "path": path, "signals": list(idxs)}
+
+
+@mcp.tool()
+def plecs_scan_parameter(param: str, start: float, end: float, points: int,
+                         model_name: Optional[str] = None, signal: int = 0,
+                         metric: str = "steady_state", minimize: bool = False,
+                         base_vars: Optional[dict] = None) -> dict:
+    """Sweep a model variable over [start, end] in `points` steps, simulating each
+    run and extracting `metric` from `signal`. Returns the (value, metric) table
+    plus the optimum. `base_vars` holds other ModelVars fixed. Runs server-side so
+    the agent gets a compact result instead of many raw waveforms."""
+    name = model_name or _STATE["current_model"]
+    if not name:
+        return {"ok": False, "error": "no model loaded; call plecs_load_model first"}
+    points = max(2, int(points))
+    step = (end - start) / (points - 1)
+    rows = []
+    for i in range(points):
+        v = start + i * step
+        mv = dict(base_vars or {})
+        mv[param] = v
+        try:
+            r = client.simulate(name, {"ModelVars": mv})
+        except Exception as e:
+            rows.append({"value": v, metric: None, "error": str(e)[:80]})
+            continue
+        time, values = to_signals(r.get("Time") or [], r.get("Values") or [])
+        val = _metrics(time, values[signal], names=[metric]).get(metric) if values else None
+        rows.append({"value": v, metric: val})
+    valid = [r for r in rows if r.get(metric) is not None]
+    if not valid:
+        return {"ok": False, "error": "no successful runs", "rows": rows}
+    opt = (min if minimize else max)(valid, key=lambda r: r[metric])
+    return {"ok": True, "param": param, "metric": metric, "signal": signal,
+            "n": points, "rows": rows, "optimum": opt}
+
+
+@mcp.tool()
+def plecs_run_analysis(analysis_name: str, model_name: Optional[str] = None) -> dict:
+    """Run a named PLECS Analysis defined in the model (Steady-State / AC Sweep /
+    Impulse Response / Multitone). For frequency-response analyses, returns a bode
+    summary (DC gain dB, gain-crossover Hz, phase margin deg) and a result handle
+    (signal 0 = magnitude dB, signal 1 = phase deg vs frequency) for plotting.
+    The analysis must be defined in the model (PLECS Analysis dialog)."""
+    name = model_name or _STATE["current_model"]
+    if not name:
+        return {"ok": False, "error": "no model loaded; call plecs_load_model first"}
+    try:
+        r = client.analyze(name, analysis_name)
+    except Exception as e:
+        return {"ok": False, "error": f"analyze failed: {str(e)[:200]}"}
+    if isinstance(r, dict) and "F" in r and ("Gr" in r or "Gi" in r):
+        b = _bode(r["F"], r.get("Gr") or [], r.get("Gi") or [])
+        handle = STORE.add(name + ":" + analysis_name, b["f"], [b["mag_db"], b["phase_deg"]])
+        return {"ok": True, "type": "frequency_response", "analysis": analysis_name,
+                "handle": handle, "n_points": len(b["f"]),
+                "f_start_hz": b["f"][0], "f_end_hz": b["f"][-1],
+                "dc_gain_db": round(b["dc_gain_db"], 2),
+                "gain_crossover_hz": (round(b["gain_crossover_hz"], 1) if b["gain_crossover_hz"] else None),
+                "phase_margin_deg": (round(b["phase_margin_deg"], 1) if b["phase_margin_deg"] else None)}
+    return {"ok": True, "type": "operating_point", "analysis": analysis_name,
+            "keys": list(r.keys()) if isinstance(r, dict) else None,
+            "note": "non-frequency analysis (e.g. steady-state sets the operating point; no series returned)"}
 
 
 from .authoring.tools import register_authoring_tools
