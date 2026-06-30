@@ -26,3 +26,18 @@ magnetic, plus simulation scripts and analyses.
 ## Environment notes
 - PLECS 4.7, Windows, RPC port 1080. gh CLI authed as `yingriyanlong`
   (call by full path `<git-cli>\gh.exe` until app PATH refresh).
+
+## M1 done (2026-06-30)
+Run/observe tools implemented and verified on live PLECS 4.7:
+- Tools: plecs_load_model, plecs_close_model, plecs_set_param, plecs_simulate
+  (with model_vars / solver_opts overrides), plecs_analyze_waveform,
+  plecs_get_waveform, plecs_plot_waveform. Results held server-side behind
+  handles; tools return summaries/metrics, not raw arrays.
+- Verified: agent_buck Vo=11.9985 V, ripple 0.377 V, overshoot 85.3%
+  (matches ζ≈0.05), settling 3.42 ms. model_vars tuning: Vi=12 -> Vo=5.999 V;
+  D=0.4 -> Vo=9.606 V. simple_buck sample: 13-signal outport parsed. Plot PNG OK.
+- Offline pytest: 3 passed. Registered via `claude mcp add -s user plecs` ->
+  `claude mcp list` shows plecs ✔ Connected.
+
+Next: M2 authoring engine — Spec -> .plecs serializer + component KB (electrical)
++ plecs_build_model/validate + golden topologies (boost, buck-boost).

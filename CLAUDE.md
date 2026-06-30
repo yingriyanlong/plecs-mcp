@@ -44,3 +44,4 @@ M6 hardening + evaluations.
 | 2026-06-30 | Python + official mcp SDK, stdio | PLECS stack is Python-native (pyplecs, xmlrpc, verified PoC); local stdio is simplest/safest. |
 | 2026-06-30 | Author circuits via `.plecs` generation, not an API | PLECS XML-RPC cannot construct schematics; `.plecs` text is generatable and verified. |
 | 2026-06-30 | Connectivity treated as symbolic (name+terminal) | Confirmed by from-scratch buck loading clean on live PLECS. |
+| 2026-06-30 | M1: param tuning via `ModelVars` in simulate opts; results behind handles | Matches PLECS scripting (override init vars per run); keeps agent context small. |
