@@ -1,0 +1,265 @@
+Plecs {
+  Name          "agent_buckboost"
+  Version       "4.7"
+  CircuitModel  "ContStateSpace"
+  StartTime     "0.0"
+  TimeSpan      "1e-2"
+  Timeout       ""
+  Solver        "radau"
+  MaxStep       "1e-6"
+  InitStep      "-1"
+  FixedStep     "1e-3"
+  Refine        "1"
+  ZCStepSize    "1e-9"
+  RelTol        "1e-3"
+  AbsTol        "-1"
+  TurnOnThreshold "1"
+  SyncFixedStepTasks "2"
+  UseSingleCommonBaseRate "2"
+  LossVariableLimitExceededMsg "3"
+  NegativeSwitchLossMsg "3"
+  DivisionByZeroMsg "2"
+  StiffnessDetectionMsg "2"
+  MaxConsecutiveZCs "1000"
+  AlgebraicLoopWithStateMachineMsg "2"
+  AssertionAction "1"
+  InitializationCommands "Vi=24;\nfs=100e3;\nD=0.5;\nLo=200e-6;\nCo=200e-6;\nRo=20;\nron=1e-3;\nVf_d=0;\nRon_d=1e-3;"
+  InitialState  "1"
+  SystemState   ""
+  TaskingMode   "1"
+  TaskConfigurations ""
+  CodeGenParameterInlining "2"
+  CodeGenFloatingPointFormat "2"
+  CodeGenAbsTimeUsageMsg "3"
+  CodeGenBaseName ""
+  CodeGenOutputDir ""
+  CodeGenExtraOpts ""
+  CodeGenTarget "Generic"
+  CodeGenTargetSettings ""
+  ExtendedMatrixPrecision "2"
+  MatrixSignificanceCheck "2"
+  EnableStateSpaceSplitting "2"
+  DisplayStateSpaceSplitting "1"
+  DiscretizationMethod "2"
+  ExternalModeSettings ""
+  AlgebraicLoopMethod "1"
+  AlgebraicLoopTolerance "1e-6"
+  ScriptsDialogGeometry ""
+  ScriptsDialogSplitterPos "0"
+  Terminal {
+    Type          Output
+    Index         "1"
+  }
+  Schematic {
+    Location      [915, 288; 1725, 613]
+    ZoomFactor    1
+    SliderPosition [0, 0]
+    ShowBrowser   off
+    BrowserWidth  100
+    Component {
+      Type          DCVoltageSource
+      Name          "VDCin"
+      Show          on
+      Position      [85, 100]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "V"
+        Value         "Vi"
+        Show          off
+      }
+    }
+    Component {
+      Type          Inductor
+      Name          "L1"
+      Show          on
+      Position      [175, 100]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "L"
+        Value         "Lo"
+        Show          off
+      }
+    }
+    Component {
+      Type          Mosfet
+      Name          "FET1"
+      Show          on
+      Position      [265, 100]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Ron"
+        Value         "ron"
+        Show          off
+      }
+    }
+    Component {
+      Type          Diode
+      Name          "D1"
+      Show          on
+      Position      [355, 100]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Vf"
+        Value         "Vf_d"
+        Show          off
+      }
+      Parameter {
+        Variable      "Ron"
+        Value         "Ron_d"
+        Show          off
+      }
+    }
+    Component {
+      Type          Capacitor
+      Name          "C1"
+      Show          on
+      Position      [445, 100]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "C"
+        Value         "Co"
+        Show          off
+      }
+    }
+    Component {
+      Type          Resistor
+      Name          "R1"
+      Show          on
+      Position      [535, 100]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "R"
+        Value         "Ro"
+        Show          off
+      }
+    }
+    Component {
+      Type          PulseGenerator
+      Name          "PWM"
+      Show          on
+      Position      [625, 100]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "f"
+        Value         "fs"
+        Show          off
+      }
+      Parameter {
+        Variable      "DutyCycle"
+        Value         "D"
+        Show          off
+      }
+    }
+    Component {
+      Type          PlecsProbe
+      Name          "Out1_prb"
+      Show          on
+      Position      [735, 100]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Probe {
+        Component     "C1"
+        Path          ""
+        Signals       {"Capacitor voltage"}
+      }
+    }
+    Component {
+      Type          Output
+      Name          "Out1"
+      Show          on
+      Position      [795, 100]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Index"
+        Value         "1"
+        Show          on
+      }
+      Parameter {
+        Variable      "Width"
+        Value         "-1"
+        Show          off
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "VDCin"
+      SrcTerminal   1
+      DstComponent  "FET1"
+      DstTerminal   1
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "FET1"
+      SrcTerminal   2
+      Branch {
+        DstComponent  "L1"
+        DstTerminal   1
+      }
+      Branch {
+        DstComponent  "D1"
+        DstTerminal   2
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "D1"
+      SrcTerminal   1
+      Branch {
+        DstComponent  "C1"
+        DstTerminal   1
+      }
+      Branch {
+        DstComponent  "R1"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "VDCin"
+      SrcTerminal   2
+      Branch {
+        DstComponent  "L1"
+        DstTerminal   2
+      }
+      Branch {
+        DstComponent  "C1"
+        DstTerminal   2
+      }
+      Branch {
+        DstComponent  "R1"
+        DstTerminal   2
+      }
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "PWM"
+      SrcTerminal   1
+      DstComponent  "FET1"
+      DstTerminal   3
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Out1_prb"
+      SrcTerminal   1
+      DstComponent  "Out1"
+      DstTerminal   1
+    }
+  }
+}

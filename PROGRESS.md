@@ -41,3 +41,18 @@ Run/observe tools implemented and verified on live PLECS 4.7:
 
 Next: M2 authoring engine — Spec -> .plecs serializer + component KB (electrical)
 + plecs_build_model/validate + golden topologies (boost, buck-boost).
+
+## M2 done (2026-06-30)
+Authoring engine implemented and verified — the agent can build circuits from scratch.
+- `authoring/`: `kb.py` (component knowledge base: PLECS type -> terminal map +
+  params, verified indices), `spec.py` (pydantic CircuitSpec), `serializer.py`
+  (Spec -> .plecs; Points omitted, connectivity symbolic), `tools.py`.
+- Tools: plecs_build_model, plecs_validate_model, plecs_list_component_types,
+  plecs_describe_component.
+- Verified from-scratch builds on live PLECS: agent_boost Vo=48.019 V
+  (Vi/(1-D)=48), agent_buckboost Vo=-24.071 V (-Vi*D/(1-D)=-24, sign correct).
+  Both added to golden_models. Offline pytest: 6 passed.
+- Confirmed: omitting wire `Points` loads cleanly — wiring is purely symbolic.
+
+Next: M3 control loops — control-domain KB (sum, gain, PI/PID, PWM comparator,
+sawtooth, limiter, sensors) + closed-loop golden (regulated buck).

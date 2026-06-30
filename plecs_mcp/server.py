@@ -162,6 +162,10 @@ def plecs_plot_waveform(handle: str, signals: Optional[list] = None,
     return {"ok": True, "handle": handle, "path": path, "signals": list(idxs)}
 
 
+from .authoring.tools import register_authoring_tools
+register_authoring_tools(mcp)
+
+
 def main() -> None:
     mcp.run()
 
