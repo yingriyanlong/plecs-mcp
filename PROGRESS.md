@@ -74,3 +74,16 @@ Studied the 89 bundled PLECS demos and codified them into the engine.
 TODO: re-layout agent_buckboost to demo-grade; add a role-based auto-layout helper
 so generation is clean without manual coordinates; expand CORE roles for control
 parts (M3).
+
+## Auto-layout helper (2026-06-30)
+`authoring/layout.py`: net-analysis two-rail layouter. From components + symbolic
+connections only (no coordinates), it infers the ground net, ranks nodes along the
+current path, classifies each part as series (both terminals non-ground -> top
+rail) or bridge (one terminal on ground -> vertical), places them on the demo grid,
+and rebuilds one orthogonal wire per net with Points. build_model auto-runs it when
+no positions are given (layout='manual' to keep explicit coords).
+- Verified from ZERO coordinates on live PLECS, clean + correct (visually checked):
+  buck Vo=12.04, boost Vo=48.02, buck-boost Vo=-24.07. Inductor correctly drawn as
+  series (buck/boost) vs shunt-to-ground (buck-boost) via connectivity.
+- All three golden_models regenerated via auto-layout (now engine-reproducible).
+  Offline pytest: 11 passed.

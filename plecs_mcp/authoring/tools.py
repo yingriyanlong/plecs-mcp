@@ -12,6 +12,7 @@ from ..rpc import client
 from . import templates
 from .kb import describe as kb_describe
 from .kb import known_types, validate_spec
+from .layout import auto_layout
 from .serializer import serialize
 from .spec import CircuitSpec
 
@@ -27,7 +28,8 @@ def describe_type(type_name: str) -> dict:
     return {"ok": True, "type": type_name, **d}
 
 
-def build_model(spec: dict, out_dir: str | None = None, load: bool = True) -> dict:
+def build_model(spec: dict, out_dir: str | None = None, load: bool = True,
+                layout: str | None = None) -> dict:
     try:
         s = CircuitSpec(**spec)
     except Exception as e:
@@ -35,6 +37,13 @@ def build_model(spec: dict, out_dir: str | None = None, load: bool = True) -> di
     errs = validate_spec(s)
     if errs:
         return {"ok": False, "errors": errs}
+    # auto-layout when requested, or by default when no coordinates were given
+    auto = (layout == "auto") or (layout is None and all(c.position is None for c in s.components))
+    if auto:
+        try:
+            s = auto_layout(s)
+        except Exception as e:
+            return {"ok": False, "error": f"auto-layout failed: {e}; pass explicit positions or layout='manual'"}
     text = serialize(s)
     d = out_dir or os.environ.get("PLECS_MCP_MODEL_DIR", tempfile.gettempdir())
     os.makedirs(d, exist_ok=True)
@@ -78,7 +87,8 @@ def register_authoring_tools(mcp) -> None:
         return describe_type(type_name)
 
     @mcp.tool()
-    def plecs_build_model(spec: dict, out_dir: str | None = None, load: bool = True) -> dict:
+    def plecs_build_model(spec: dict, out_dir: str | None = None, load: bool = True,
+                          layout: str | None = None) -> dict:
         """Build a .plecs model from a structured spec, write it, and (by default)
         load it into PLECS to validate.
 
@@ -86,9 +96,9 @@ def register_authoring_tools(mcp) -> None:
         direction, flipped}], connections: [{kind: "Wire"|"Signal", src: [name,
         term], points: [[x,y],...], dsts: [[name, term] | [name, term, [[x,y]]]]}],
         outputs: [{name, probe_component, probe_signal, index, position}]}.
-        Connectivity is symbolic (component name + terminal index). For clean
-        layout follow docs/plecs-layout-conventions.md (two-rail grid + Points)."""
-        return build_model(spec, out_dir=out_dir, load=load)
+        Connectivity is symbolic (component name + terminal index). Omit positions to get
+        automatic two-rail layout (layout='manual' to keep your coordinates)."""
+        return build_model(spec, out_dir=out_dir, load=load, layout=layout)
 
     @mcp.tool()
     def plecs_validate_model(model_path: str) -> dict:

@@ -3,7 +3,7 @@ Plecs {
   Version       "4.7"
   CircuitModel  "ContStateSpace"
   StartTime     "0.0"
-  TimeSpan      "T_sim"
+  TimeSpan      "1e-2"
   Timeout       ""
   Solver        "radau"
   MaxStep       "1e-6"
@@ -23,7 +23,7 @@ Plecs {
   MaxConsecutiveZCs "1000"
   AlgebraicLoopWithStateMachineMsg "2"
   AssertionAction "1"
-  InitializationCommands "T_sim=5e-3;\nVi=24;\nfs=100e3;\nD=0.5;\nLo=100e-6;\nCo=100e-6;\nRo=10;\nron=1e-3;\nVf_d=0;\nRon_d=1e-3;"
+  InitializationCommands "Vi=24;\nfs=100e3;\nD=0.5;\nLo=200e-6;\nCo=200e-6;\nRo=20;\nron=1e-3;\nVf_d=0;\nRon_d=1e-3;"
   InitialState  "1"
   SystemState   ""
   TaskingMode   "1"
@@ -60,10 +60,10 @@ Plecs {
       Type          DCVoltageSource
       Name          "VDCin"
       Show          on
-      Position      [85, 95]
-      Direction     up
-      Flipped       off
-      LabelPosition west
+      Position      [60, 140]
+      Direction     down
+      Flipped       on
+      LabelPosition south
       Parameter {
         Variable      "V"
         Value         "Vi"
@@ -71,13 +71,27 @@ Plecs {
       }
     }
     Component {
+      Type          Inductor
+      Name          "L1"
+      Show          on
+      Position      [270, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "L"
+        Value         "Lo"
+        Show          off
+      }
+    }
+    Component {
       Type          Mosfet
       Name          "FET1"
       Show          on
-      Position      [200, 60]
+      Position      [130, 95]
       Direction     left
       Flipped       off
-      LabelPosition north
+      LabelPosition south
       Parameter {
         Variable      "Ron"
         Value         "ron"
@@ -88,10 +102,10 @@ Plecs {
       Type          Diode
       Name          "D1"
       Show          on
-      Position      [250, 100]
-      Direction     down
-      Flipped       off
-      LabelPosition east
+      Position      [200, 140]
+      Direction     up
+      Flipped       on
+      LabelPosition south
       Parameter {
         Variable      "Vf"
         Value         "Vf_d"
@@ -104,27 +118,13 @@ Plecs {
       }
     }
     Component {
-      Type          Inductor
-      Name          "L1"
-      Show          on
-      Position      [290, 60]
-      Direction     left
-      Flipped       off
-      LabelPosition southeast
-      Parameter {
-        Variable      "L"
-        Value         "Lo"
-        Show          off
-      }
-    }
-    Component {
       Type          Capacitor
       Name          "C1"
       Show          on
-      Position      [335, 95]
+      Position      [340, 140]
       Direction     down
       Flipped       on
-      LabelPosition west
+      LabelPosition south
       Parameter {
         Variable      "C"
         Value         "Co"
@@ -135,10 +135,10 @@ Plecs {
       Type          Resistor
       Name          "R1"
       Show          on
-      Position      [370, 100]
-      Direction     up
-      Flipped       off
-      LabelPosition east
+      Position      [410, 140]
+      Direction     down
+      Flipped       on
+      LabelPosition south
       Parameter {
         Variable      "R"
         Value         "Ro"
@@ -148,21 +148,11 @@ Plecs {
     Component {
       Type          PulseGenerator
       Name          "PWM"
-      Show          off
-      Position      [160, 100]
+      Show          on
+      Position      [100, 210]
       Direction     right
       Flipped       off
       LabelPosition south
-      Parameter {
-        Variable      "Hi"
-        Value         "1"
-        Show          off
-      }
-      Parameter {
-        Variable      "Lo"
-        Value         "0"
-        Show          off
-      }
       Parameter {
         Variable      "f"
         Value         "fs"
@@ -173,22 +163,12 @@ Plecs {
         Value         "D"
         Show          off
       }
-      Parameter {
-        Variable      "Delay"
-        Value         "0"
-        Show          off
-      }
-      Parameter {
-        Variable      "DataType"
-        Value         "10"
-        Show          off
-      }
     }
     Component {
       Type          PlecsProbe
-      Name          "vo_prb"
+      Name          "Out1_prb"
       Show          on
-      Position      [460, 100]
+      Position      [735, 100]
       Direction     right
       Flipped       off
       LabelPosition south
@@ -202,7 +182,7 @@ Plecs {
       Type          Output
       Name          "Out1"
       Show          on
-      Position      [575, 100]
+      Position      [795, 100]
       Direction     right
       Flipped       off
       LabelPosition south
@@ -221,60 +201,64 @@ Plecs {
       Type          Wire
       SrcComponent  "VDCin"
       SrcTerminal   1
-      Points        [85, 60]
-      DstComponent  "FET1"
-      DstTerminal   1
+      Points        [60, 95]
+      Branch {
+        Points        [105, 95]
+        DstComponent  "FET1"
+        DstTerminal   1
+      }
     }
     Connection {
       Type          Wire
       SrcComponent  "FET1"
       SrcTerminal   2
-      Points        [250, 60]
+      Points        [155, 95]
       Branch {
-        DstComponent  "L1"
-        DstTerminal   1
-      }
-      Branch {
+        Points        [200, 95]
         DstComponent  "D1"
         DstTerminal   2
+      }
+      Branch {
+        Points        [245, 95]
+        DstComponent  "L1"
+        DstTerminal   1
       }
     }
     Connection {
       Type          Wire
       SrcComponent  "L1"
       SrcTerminal   2
-      Points        [335, 60]
+      Points        [295, 95]
       Branch {
+        Points        [340, 95]
         DstComponent  "C1"
         DstTerminal   1
       }
       Branch {
-        Points        [370, 60]
+        Points        [410, 95]
         DstComponent  "R1"
         DstTerminal   1
       }
     }
     Connection {
       Type          Wire
-      SrcComponent  "C1"
+      SrcComponent  "VDCin"
       SrcTerminal   2
-      Points        [335, 130]
+      Points        [60, 185]
       Branch {
-        Points        [370, 130]
-        DstComponent  "R1"
+        Points        [200, 185]
+        DstComponent  "D1"
+        DstTerminal   1
+      }
+      Branch {
+        Points        [340, 185]
+        DstComponent  "C1"
         DstTerminal   2
       }
       Branch {
-        Points        [250, 130]
-        Branch {
-          Points        [85, 130]
-          DstComponent  "VDCin"
-          DstTerminal   2
-        }
-        Branch {
-          DstComponent  "D1"
-          DstTerminal   1
-        }
+        Points        [410, 185]
+        DstComponent  "R1"
+        DstTerminal   2
       }
     }
     Connection {
@@ -286,7 +270,7 @@ Plecs {
     }
     Connection {
       Type          Signal
-      SrcComponent  "vo_prb"
+      SrcComponent  "Out1_prb"
       SrcTerminal   1
       DstComponent  "Out1"
       DstTerminal   1

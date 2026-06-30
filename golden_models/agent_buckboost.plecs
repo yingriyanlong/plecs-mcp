@@ -60,9 +60,9 @@ Plecs {
       Type          DCVoltageSource
       Name          "VDCin"
       Show          on
-      Position      [85, 100]
-      Direction     up
-      Flipped       off
+      Position      [60, 140]
+      Direction     down
+      Flipped       on
       LabelPosition south
       Parameter {
         Variable      "V"
@@ -74,7 +74,7 @@ Plecs {
       Type          Inductor
       Name          "L1"
       Show          on
-      Position      [175, 100]
+      Position      [130, 140]
       Direction     up
       Flipped       off
       LabelPosition south
@@ -88,8 +88,8 @@ Plecs {
       Type          Mosfet
       Name          "FET1"
       Show          on
-      Position      [265, 100]
-      Direction     up
+      Position      [200, 95]
+      Direction     left
       Flipped       off
       LabelPosition south
       Parameter {
@@ -102,8 +102,8 @@ Plecs {
       Type          Diode
       Name          "D1"
       Show          on
-      Position      [355, 100]
-      Direction     up
+      Position      [270, 95]
+      Direction     right
       Flipped       off
       LabelPosition south
       Parameter {
@@ -121,9 +121,9 @@ Plecs {
       Type          Capacitor
       Name          "C1"
       Show          on
-      Position      [445, 100]
-      Direction     up
-      Flipped       off
+      Position      [340, 140]
+      Direction     down
+      Flipped       on
       LabelPosition south
       Parameter {
         Variable      "C"
@@ -135,9 +135,9 @@ Plecs {
       Type          Resistor
       Name          "R1"
       Show          on
-      Position      [535, 100]
-      Direction     up
-      Flipped       off
+      Position      [410, 140]
+      Direction     down
+      Flipped       on
       LabelPosition south
       Parameter {
         Variable      "R"
@@ -149,8 +149,8 @@ Plecs {
       Type          PulseGenerator
       Name          "PWM"
       Show          on
-      Position      [625, 100]
-      Direction     up
+      Position      [170, 210]
+      Direction     right
       Flipped       off
       LabelPosition south
       Parameter {
@@ -201,18 +201,25 @@ Plecs {
       Type          Wire
       SrcComponent  "VDCin"
       SrcTerminal   1
-      DstComponent  "FET1"
-      DstTerminal   1
+      Points        [60, 95]
+      Branch {
+        Points        [175, 95]
+        DstComponent  "FET1"
+        DstTerminal   1
+      }
     }
     Connection {
       Type          Wire
-      SrcComponent  "FET1"
-      SrcTerminal   2
+      SrcComponent  "L1"
+      SrcTerminal   1
+      Points        [130, 95]
       Branch {
-        DstComponent  "L1"
-        DstTerminal   1
+        Points        [225, 95]
+        DstComponent  "FET1"
+        DstTerminal   2
       }
       Branch {
+        Points        [245, 95]
         DstComponent  "D1"
         DstTerminal   2
       }
@@ -221,11 +228,14 @@ Plecs {
       Type          Wire
       SrcComponent  "D1"
       SrcTerminal   1
+      Points        [295, 95]
       Branch {
+        Points        [340, 95]
         DstComponent  "C1"
         DstTerminal   1
       }
       Branch {
+        Points        [410, 95]
         DstComponent  "R1"
         DstTerminal   1
       }
@@ -234,15 +244,19 @@ Plecs {
       Type          Wire
       SrcComponent  "VDCin"
       SrcTerminal   2
+      Points        [60, 185]
       Branch {
+        Points        [130, 185]
         DstComponent  "L1"
         DstTerminal   2
       }
       Branch {
+        Points        [340, 185]
         DstComponent  "C1"
         DstTerminal   2
       }
       Branch {
+        Points        [410, 185]
         DstComponent  "R1"
         DstTerminal   2
       }
