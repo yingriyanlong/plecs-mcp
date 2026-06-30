@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plecs-mcp"
+version = "0.1.0"
+description = "MCP server for full-scope PLECS power-electronics simulation (build, run, tune, analyze)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "yingriyanlong" }]
+dependencies = [
+    "mcp>=1.0",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+# Simulation backend + analysis. pyplecs is installed from source for now
+# (not yet on PyPI); see docs/development-plan.md.
+sim = ["numpy", "scipy", "matplotlib"]
+dev = ["pytest", "ruff"]
+
+[project.scripts]
+plecs-mcp = "plecs_mcp.server:main"
+
+[tool.setuptools.packages.find]
+include = ["plecs_mcp*"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
