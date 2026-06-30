@@ -33,6 +33,11 @@ CORE: dict[str, dict] = {
     "Gain": {"domain": "control", "terminals": {1: "in", 2: "out"}, "params": {"K": "1"}},
     "Sum": {"domain": "control", "terminals": {1: "in1", 2: "in2", 3: "out"}, "params": {"Inputs": "+-"}},
     "Step": {"domain": "control", "terminals": {1: "out"}, "params": {"Time": "0", "Before": "0", "After": "1"}},
+    "Sum": {"domain": "control", "terminals": {1: "out", 2: "in+", 3: "in-"}, "params": {"Inputs": "|+-"}},
+    "TransferFunction": {"domain": "control", "terminals": {1: "in", 2: "out"}, "params": {"Numerator": "[1]", "Denominator": "[1]", "X0": "0"}},
+    "Saturation": {"domain": "control", "terminals": {1: "in", 2: "out"}, "params": {"UpperLimit": "1", "LowerLimit": "0"}},
+    "RelationalOperator": {"domain": "control", "terminals": {1: "in1", 2: "in2", 3: "out"}, "params": {"Operator": "6"}},
+    "TriangleGenerator": {"domain": "control", "terminals": {1: "out"}, "params": {"Min": "0", "Max": "1", "f": "1e3", "DutyCycle": "0.5"}},
     "PlecsProbe": {"domain": "measurement", "terminals": {1: "out"}, "params": {}},
     "Output": {"domain": "io", "terminals": {1: "in"}, "params": {"Index": "1", "Width": "-1"}},
 }

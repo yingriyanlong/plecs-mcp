@@ -50,8 +50,19 @@ def ping(cfg: Optional[Config] = None) -> dict[str, Any]:
 
 
 def load(path: str, cfg: Optional[Config] = None):
-    """Load a .plecs model by absolute path (plecs.load)."""
-    return _proxy(cfg).plecs.load(path)
+    """Load a .plecs model by absolute path (plecs.load).
+
+    PLECS does NOT refresh a model that is already open, so we close any model
+    of the same name first to guarantee the on-disk version is (re)loaded.
+    """
+    import os
+    p = _proxy(cfg)
+    name = os.path.splitext(os.path.basename(path))[0]
+    try:
+        p.plecs.close(name)
+    except Exception:
+        pass
+    return p.plecs.load(path)
 
 
 def close(name: str, cfg: Optional[Config] = None):

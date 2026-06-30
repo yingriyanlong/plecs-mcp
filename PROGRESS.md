@@ -87,3 +87,26 @@ no positions are given (layout='manual' to keep explicit coords).
   series (buck/boost) vs shunt-to-ground (buck-boost) via connectivity.
 - All three golden_models regenerated via auto-layout (now engine-reproducible).
   Offline pytest: 11 passed.
+
+## M3 control loops (2026-06-30)
+Learned the analog control chain from buck_converter_with_voltage_controls and
+built a FLAT (no-subsystem) closed loop the engine can generate.
+- CORE KB gained control types with terminal roles: Sum (1=out,2=in+,3=in-),
+  TransferFunction (1=in,2=out), Saturation, RelationalOperator (1,2=in,3=out),
+  TriangleGenerator, plus Gain/Constant. Param formats from the demo (Sum
+  Inputs "|+-", RelationalOperator Operator 6 = ">=", TF Numerator/Denominator
+  "[a b]").
+- golden_models/agent_buck_closedloop: voltage-mode PI + triangle-carrier PWM.
+  Sensor (Voltmeter) -> Sum(Vref-Vo) -> PI (TransferFunction [Kp Ki]/[1 0]) ->
+  Saturation -> RelationalOperator vs TriangleGenerator -> MOSFET gate. Output
+  cap ESR for damping.
+- Verified on live PLECS: Vo=15.00 V (target 15), overshoot 0.25%, settling
+  7.9 ms, ripple 0.075 V; tracks reference (Vref=10 -> Vo=10.00).
+- BUG FIX: plecs.load did not refresh an already-open model -> rpc.client.load
+  now closes-then-loads. (Earlier closed-loop "ringing" was the stale base model;
+  the real model is well damped.)
+- Offline pytest: 13 passed.
+
+Honest limits: control-block auto-layout is power-focused (control parts are
+strung along the top rail — functional, not pretty). A single PI on a high-Q LC
+is marginal; proper compensator design wants the AC/bode tools in M4.
