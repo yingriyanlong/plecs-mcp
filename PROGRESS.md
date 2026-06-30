@@ -56,3 +56,21 @@ Authoring engine implemented and verified — the agent can build circuits from 
 
 Next: M3 control loops — control-domain KB (sum, gain, PI/PID, PWM comparator,
 sawtooth, limiter, sensors) + closed-loop golden (regulated buck).
+
+## M2.5 layout + demo knowledge (2026-06-30)
+Studied the 89 bundled PLECS demos and codified them into the engine.
+- Layout: confirmed why generated circuits looked messy (single row, no wire
+  Points). Added `points` support to the serializer; adopted the demos' two-rail
+  grid (top rail y=95, ground y~185, vertical bridges y=140, ~50px spacing).
+  Re-generated agent_boost demo-grade clean AND correct (Vo=48.019 V) — verified
+  visually in PLECS. Conventions written to docs/plecs-layout-conventions.md.
+- Demo harvest: parsed all 89 demos -> reference/harvested_components.json
+  (91 component types with params + terminal counts) and reference/demo_catalog.json
+  (89 reference topologies). KB now has curated CORE (terminal roles) + full
+  LIBRARY (harvested) backing describe/list/validate for ~92 types.
+- New tools: plecs_list_templates / plecs_describe_template (use a demo as a clean
+  starting point). Offline pytest: 9 passed.
+
+TODO: re-layout agent_buckboost to demo-grade; add a role-based auto-layout helper
+so generation is clean without manual coordinates; expand CORE roles for control
+parts (M3).

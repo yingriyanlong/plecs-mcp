@@ -138,21 +138,35 @@ def _output(o, x: int, y: int) -> list[str]:
     ]
 
 
-def _connection(kind: str, src: list, dsts: list) -> list[str]:
+def _pts(points) -> str:
+    return "[" + "; ".join(f"{int(x)}, {int(y)}" for x, y in points) + "]"
+
+
+def _connection_raw(kind: str, src: list, dsts: list, points=None) -> list[str]:
     out = [
         "    Connection {",
         f"      Type          {kind}",
         f'      SrcComponent  "{src[0]}"',
         f"      SrcTerminal   {int(src[1])}",
     ]
-    if len(dsts) == 1:
-        out += [f'      DstComponent  "{dsts[0][0]}"', f"      DstTerminal   {int(dsts[0][1])}"]
+    if points:
+        out.append(f"      Points        {_pts(points)}")
+    norm = [(d[0], d[1], d[2] if len(d) > 2 else None) for d in dsts]
+    if len(norm) == 1 and norm[0][2] is None:
+        out += [f'      DstComponent  "{norm[0][0]}"', f"      DstTerminal   {int(norm[0][1])}"]
     else:
-        for d in dsts:
-            out += ["      Branch {", f'        DstComponent  "{d[0]}"',
-                    f"        DstTerminal   {int(d[1])}", "      }"]
+        for name, term, p in norm:
+            b = ["      Branch {"]
+            if p:
+                b.append(f"        Points        {_pts(p)}")
+            b += [f'        DstComponent  "{name}"', f"        DstTerminal   {int(term)}", "      }"]
+            out += b
     out.append("    }")
     return out
+
+
+def _connection(conn) -> list[str]:
+    return _connection_raw(conn.kind, conn.src, conn.dsts, getattr(conn, "points", None))
 
 
 def serialize(spec: CircuitSpec) -> str:
@@ -182,8 +196,8 @@ def serialize(spec: CircuitSpec) -> str:
         L += _probe(o, px - 60, py)
         L += _output(o, px, py)
     for conn in spec.connections:
-        L += _connection(conn.kind, conn.src, conn.dsts)
+        L += _connection(conn)
     for o in spec.outputs:
-        L += _connection("Signal", [f"{o.name}_prb", 1], [[o.name, 1]])
+        L += _connection_raw("Signal", [f"{o.name}_prb", 1], [[o.name, 1]])
     L += ["  }", "}", ""]
     return "\n".join(L)

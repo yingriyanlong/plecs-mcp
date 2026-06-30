@@ -1,0 +1,1536 @@
+{
+  "ACVoltageSource": {
+    "params": [
+      "V",
+      "phi",
+      "w"
+    ],
+    "terminals": 2,
+    "count": 15
+  },
+  "Abs": {
+    "params": [],
+    "terminals": 2,
+    "count": 1
+  },
+  "Ammeter": {
+    "params": [],
+    "terminals": 3,
+    "count": 67
+  },
+  "AngleSensor": {
+    "params": [
+      "SecondFlange",
+      "theta0"
+    ],
+    "terminals": 2,
+    "count": 13
+  },
+  "Breaker": {
+    "params": [
+      "SwitchModel",
+      "f_grid",
+      "s_init"
+    ],
+    "terminals": 3,
+    "count": 2
+  },
+  "Capacitor": {
+    "params": [
+      "C",
+      "v_init"
+    ],
+    "terminals": 2,
+    "count": 110
+  },
+  "Clock": {
+    "params": [],
+    "terminals": 1,
+    "count": 3
+  },
+  "CombinatorialLogic": {
+    "params": [
+      "TruthTable"
+    ],
+    "terminals": 2,
+    "count": 1
+  },
+  "ConfigurableSubsystem": {
+    "params": [
+      "A",
+      "Ae",
+      "After",
+      "AllowStarConnection",
+      "Amplitude",
+      "Animate",
+      "B_sat",
+      "Before",
+      "Bias",
+      "C",
+      "Cdc",
+      "ConductionLoss",
+      "Configuration",
+      "Cth",
+      "DataType",
+      "DataTypeOverflowMode",
+      "Declarations",
+      "Delay",
+      "Denominator",
+      "DerivativeFcn",
+      "DialogGeometry",
+      "DirectFeedthrough",
+      "DiscretizationBehavior",
+      "DutyCycle",
+      "EnableWrapping",
+      "ExternalReset",
+      "F",
+      "F_init",
+      "Frequency",
+      "GnuExtensions",
+      "GroupTypes",
+      "H",
+      "Hi",
+      "HighlightLevel",
+      "IconShape",
+      "Index",
+      "InitialConditionSource",
+      "InitialState",
+      "InputTypes",
+      "InputVariables",
+      "InputWidth",
+      "Inputs",
+      "InternalConstantValues",
+      "InternalConstants",
+      "InternalVariableValues",
+      "InternalVariables",
+      "Islope",
+      "J",
+      "K",
+      "Ki",
+      "L",
+      "La",
+      "LangStandard",
+      "Ldc",
+      "Le",
+      "Lm",
+      "Lo",
+      "LowerLimit",
+      "Lsat",
+      "Lu",
+      "Multiplication",
+      "N",
+      "Notation",
+      "NumContStates",
+      "NumDiscStates",
+      "NumInputs",
+      "NumOutputs",
+      "NumZCSignals",
+      "Numerator",
+      "OffOutputValue",
+      "OffSwitchValue",
+      "Offset",
+      "OnOutputValue",
+      "OnSwitchValue",
+      "Operator",
+      "OutputFcn",
+      "OutputIndices",
+      "OutputVariables",
+      "Parameters",
+      "Phase",
+      "Polarity",
+      "Precision",
+      "Psisat",
+      "R",
+      "RestoreCustomStateFcn",
+      "Ron",
+      "Rth",
+      "RuntimeCheck",
+      "SampleTime",
+      "ShowStatePort",
+      "StartFcn",
+      "StateSpaceInlining",
+      "StoreCustomStateFcn",
+      "SwitchModel",
+      "SwitchingLoss",
+      "T",
+      "T_average",
+      "T_init",
+      "T_period",
+      "Tag",
+      "TerminalBasedSampleTimes",
+      "TerminateFcn",
+      "Threshold",
+      "Time",
+      "TotalLoss",
+      "TransitionOrder",
+      "TruthTable",
+      "Ts",
+      "TurnOffLoss",
+      "TurnOnLoss",
+      "Units",
+      "UpdateFcn",
+      "UpperLimit",
+      "V",
+      "Value",
+      "Vf",
+      "Visibility",
+      "Width",
+      "Windings",
+      "X0",
+      "ZeroCrossingSignals",
+      "aw_method",
+      "buffer_size",
+      "carrier_limits",
+      "carrier_phaseshift",
+      "cont_type",
+      "dmax",
+      "dmin",
+      "ex_reset",
+      "ex_sat",
+      "f",
+      "f(u)",
+      "f(x)",
+      "f_grid",
+      "f_sw",
+      "fac",
+      "fc",
+      "ff",
+      "fitting",
+      "fp",
+      "fs",
+      "fz",
+      "i0",
+      "i_init",
+      "im0",
+      "int_method",
+      "kbc",
+      "kd",
+      "kf",
+      "ki",
+      "kp",
+      "l",
+      "low_limit",
+      "m",
+      "mu_r_sat",
+      "mu_r_unsat",
+      "n",
+      "n_pri",
+      "n_sec",
+      "output_values",
+      "par_source",
+      "pattern",
+      "ph_hyst",
+      "ph_sine",
+      "ph_sv",
+      "s_init",
+      "sampling",
+      "sat_lim",
+      "svpwm_pattern",
+      "t_sample",
+      "tb",
+      "td",
+      "therm_d",
+      "therm_sw",
+      "thermal",
+      "thm0",
+      "up_limit",
+      "ur_init",
+      "ur_sat",
+      "v_init",
+      "wm0",
+      "x",
+      "x0",
+      "x0_source"
+    ],
+    "terminals": 7,
+    "count": 21
+  },
+  "Constant": {
+    "params": [
+      "DataType",
+      "Value"
+    ],
+    "terminals": 1,
+    "count": 89
+  },
+  "ConstantRelationalOperator": {
+    "params": [
+      "Operator",
+      "Threshold"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "ConstantTemperature": {
+    "params": [
+      "T"
+    ],
+    "terminals": 2,
+    "count": 1
+  },
+  "ConstantTemperatureGnd": {
+    "params": [
+      "T"
+    ],
+    "terminals": 1,
+    "count": 9
+  },
+  "ControlledRotationalSpeed": {
+    "params": [
+      "SecondFlange",
+      "StateSpaceInlining"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "ControlledTorque": {
+    "params": [
+      "DiscretizationBehavior",
+      "SecondFlange",
+      "StateSpaceInlining"
+    ],
+    "terminals": 3,
+    "count": 10
+  },
+  "CurrentSource": {
+    "params": [
+      "DiscretizationBehavior",
+      "StateSpaceInlining"
+    ],
+    "terminals": 3,
+    "count": 5
+  },
+  "DCVoltageSource": {
+    "params": [
+      "V"
+    ],
+    "terminals": 2,
+    "count": 51
+  },
+  "Diode": {
+    "params": [
+      "Ron",
+      "Rth",
+      "SwitchModel",
+      "T_init",
+      "Vf",
+      "f_grid",
+      "thermal"
+    ],
+    "terminals": 2,
+    "count": 141
+  },
+  "Display": {
+    "params": [
+      "Notation",
+      "Precision"
+    ],
+    "terminals": 1,
+    "count": 34
+  },
+  "From": {
+    "params": [
+      "NoMatchingCounterpartAction",
+      "Tag",
+      "Visibility"
+    ],
+    "terminals": 1,
+    "count": 224
+  },
+  "Function": {
+    "params": [
+      "f(u)"
+    ],
+    "terminals": 2,
+    "count": 8
+  },
+  "Gain": {
+    "params": [
+      "DataType",
+      "DataTypeOverflowMode",
+      "GainDataType",
+      "K",
+      "Multiplication",
+      "OutputDataType"
+    ],
+    "terminals": 2,
+    "count": 44
+  },
+  "Gear": {
+    "params": [
+      "g"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "Goto": {
+    "params": [
+      "NoMatchingCounterpartAction",
+      "Tag",
+      "Visibility"
+    ],
+    "terminals": 1,
+    "count": 183
+  },
+  "Ground": {
+    "params": [],
+    "terminals": 1,
+    "count": 33
+  },
+  "HeatFlowMeter": {
+    "params": [],
+    "terminals": 2,
+    "count": 3
+  },
+  "HeatSink": {
+    "params": [
+      "Cth",
+      "T_init",
+      "Width"
+    ],
+    "terminals": 2,
+    "count": 19
+  },
+  "Igbt": {
+    "params": [
+      "Ron",
+      "Rth",
+      "T_init",
+      "Vf",
+      "s_init",
+      "thermal"
+    ],
+    "terminals": 3,
+    "count": 27
+  },
+  "IgbtWithDiode": {
+    "params": [
+      "Rth",
+      "T_init",
+      "s_init",
+      "thermal"
+    ],
+    "terminals": 3,
+    "count": 15
+  },
+  "Inductor": {
+    "params": [
+      "L",
+      "i_init"
+    ],
+    "terminals": 2,
+    "count": 132
+  },
+  "Inertia": {
+    "params": [
+      "J",
+      "theta0",
+      "w0"
+    ],
+    "terminals": 2,
+    "count": 7
+  },
+  "Label": {
+    "params": [
+      "Tag",
+      "Visibility"
+    ],
+    "terminals": 1,
+    "count": 2
+  },
+  "LogicalOperator": {
+    "params": [
+      "Inputs",
+      "Operator"
+    ],
+    "terminals": 3,
+    "count": 2
+  },
+  "Lookup1D": {
+    "params": [
+      "ZeroCrossingSignals",
+      "f(x)",
+      "x"
+    ],
+    "terminals": 2,
+    "count": 3
+  },
+  "MagneticInterface": {
+    "params": [
+      "Polarity",
+      "n"
+    ],
+    "terminals": 4,
+    "count": 14
+  },
+  "ManualSignalSwitch": {
+    "params": [
+      "SwitchState"
+    ],
+    "terminals": 3,
+    "count": 2
+  },
+  "ManualSwitch": {
+    "params": [
+      "s"
+    ],
+    "terminals": 2,
+    "count": 1
+  },
+  "Mass": {
+    "params": [
+      "m",
+      "v0",
+      "x0"
+    ],
+    "terminals": 2,
+    "count": 1
+  },
+  "ModelReference": {
+    "params": [
+      "C",
+      "Fpwm",
+      "G_init",
+      "Gn",
+      "I_SCn",
+      "KI",
+      "KV",
+      "Np",
+      "Ns",
+      "PV",
+      "R_on",
+      "Rating",
+      "Rgoff",
+      "Rgon",
+      "Rp",
+      "Rs",
+      "T_init",
+      "Td",
+      "Therm",
+      "Tn",
+      "V_OCn",
+      "Vdc",
+      "a",
+      "device",
+      "fSw",
+      "nCell",
+      "n_par",
+      "n_ser",
+      "num_par",
+      "num_par_device",
+      "num_par_diode",
+      "num_ser",
+      "ron_body_diode",
+      "ron_mosfet",
+      "ron_schottky_diode",
+      "rth_ch",
+      "t_delay",
+      "t_init",
+      "therm_body_diode",
+      "therm_diode",
+      "therm_mosfet",
+      "v_init",
+      "vf_body_diode",
+      "vf_schottky_diode"
+    ],
+    "terminals": 6,
+    "count": 39
+  },
+  "Mosfet": {
+    "params": [
+      "Ron",
+      "Rth",
+      "T_init",
+      "s_init",
+      "thermal"
+    ],
+    "terminals": 3,
+    "count": 18
+  },
+  "MosfetWithDiode": {
+    "params": [
+      "Ron",
+      "Rth",
+      "T_init",
+      "s_init",
+      "thermal"
+    ],
+    "terminals": 3,
+    "count": 26
+  },
+  "MutInductor": {
+    "params": [
+      "L",
+      "Windings",
+      "i_init"
+    ],
+    "terminals": 4,
+    "count": 1
+  },
+  "Output": {
+    "params": [
+      "Index",
+      "Width"
+    ],
+    "terminals": 1,
+    "count": 2
+  },
+  "PeriodicAverage": {
+    "params": [
+      "T_average"
+    ],
+    "terminals": 2,
+    "count": 7
+  },
+  "PeriodicImpulseAverage": {
+    "params": [
+      "T_average"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "PlecsProbe": {
+    "params": [],
+    "terminals": 6,
+    "count": 164
+  },
+  "PositionSensor": {
+    "params": [
+      "SecondFlange",
+      "x0"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "Product": {
+    "params": [
+      "DataType",
+      "DataTypeOverflowMode",
+      "IconShape",
+      "Inputs"
+    ],
+    "terminals": 4,
+    "count": 15
+  },
+  "PulseGenerator": {
+    "params": [
+      "DataType",
+      "Delay",
+      "DutyCycle",
+      "Hi",
+      "Lo",
+      "f"
+    ],
+    "terminals": 1,
+    "count": 18
+  },
+  "Reference": {
+    "params": [
+      "A",
+      "Amplitude",
+      "B_sat",
+      "Bias",
+      "C_ph2n_",
+      "C_ph2ph_",
+      "Configuration",
+      "F",
+      "F_init",
+      "Frequency",
+      "Ic",
+      "Id_r",
+      "If0",
+      "Iq_r",
+      "Irrm",
+      "Islope",
+      "J",
+      "J_planet",
+      "Kc",
+      "Ks",
+      "L",
+      "L0",
+      "L_",
+      "La",
+      "Laf",
+      "Lc",
+      "Lf",
+      "Llf",
+      "Llk",
+      "Llr",
+      "Lls",
+      "Lm",
+      "Lm0",
+      "Lmdsat",
+      "Lmidd_r",
+      "Lmidq_r",
+      "Lmiqq_r",
+      "Lrr",
+      "Ls",
+      "Lsat",
+      "Lsig",
+      "Lu",
+      "M_",
+      "N",
+      "Np",
+      "Nr",
+      "Ns",
+      "Nxdq",
+      "P",
+      "Phase",
+      "Psid_r",
+      "Psiq_r",
+      "Psisat",
+      "Qrr",
+      "R",
+      "R_",
+      "Ra",
+      "Rf",
+      "Rfe",
+      "Rk",
+      "Roff",
+      "Ron",
+      "Rr",
+      "Rs",
+      "Rth",
+      "T_average",
+      "T_init",
+      "T_period",
+      "Tc",
+      "Ts",
+      "Units",
+      "Vces",
+      "Vf",
+      "Vlim",
+      "Vpk",
+      "X0",
+      "XFinal",
+      "assert",
+      "aw_method",
+      "buffer_size",
+      "combineRevDiode",
+      "config",
+      "configuration",
+      "cont_type",
+      "contr_design",
+      "dIrdt",
+      "dmax",
+      "dmin",
+      "ex_reset",
+      "ex_sat",
+      "f0",
+      "fT",
+      "fc",
+      "fitting",
+      "fs",
+      "i0",
+      "i1",
+      "i2",
+      "i_init",
+      "ia0",
+      "icheck",
+      "if0",
+      "im",
+      "input_limits",
+      "int_method",
+      "invert",
+      "is0",
+      "k",
+      "kANF",
+      "kSOGI",
+      "kbc",
+      "kd",
+      "kf",
+      "ki",
+      "kp",
+      "l",
+      "legs",
+      "low_limit",
+      "mu_r_sat",
+      "mu_r_unsat",
+      "n",
+      "offset",
+      "output_values",
+      "p",
+      "par_source",
+      "pattern",
+      "phaseshift",
+      "phi",
+      "phim",
+      "psiT",
+      "psis0",
+      "psisdq0",
+      "pulsetype",
+      "pulsewidth",
+      "ramp",
+      "sampling",
+      "sat_lim",
+      "semiSymbol",
+      "sincos",
+      "slope",
+      "start",
+      "switchModel",
+      "t_sample",
+      "tf",
+      "therm",
+      "thermalDiode",
+      "thermalIgbt",
+      "thermalIgbtDiode",
+      "thermalMosfet",
+      "thermalMosfetDiode",
+      "thermalRevDiode",
+      "theta0",
+      "thm0",
+      "tr",
+      "trr",
+      "ts",
+      "type",
+      "ue",
+      "units",
+      "up_limit",
+      "w_init_planet",
+      "wm0",
+      "x0",
+      "x0_source"
+    ],
+    "terminals": 11,
+    "count": 132
+  },
+  "RelationalOperator": {
+    "params": [
+      "Operator"
+    ],
+    "terminals": 3,
+    "count": 1
+  },
+  "Relay": {
+    "params": [
+      "DataType",
+      "InitialState",
+      "OffOutputValue",
+      "OffSwitchValue",
+      "OnOutputValue",
+      "OnSwitchValue"
+    ],
+    "terminals": 2,
+    "count": 5
+  },
+  "Resistor": {
+    "params": [
+      "R"
+    ],
+    "terminals": 2,
+    "count": 162
+  },
+  "RotationalBacklash": {
+    "params": [
+      "b",
+      "theta0"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "RotationalClutch": {
+    "params": [
+      "s_init",
+      "theta0"
+    ],
+    "terminals": 3,
+    "count": 2
+  },
+  "RotationalDamper": {
+    "params": [
+      "D",
+      "theta0"
+    ],
+    "terminals": 2,
+    "count": 6
+  },
+  "RotationalFriction": {
+    "params": [
+      "c_v",
+      "tau_C",
+      "tau_brk"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "RotationalReference": {
+    "params": [],
+    "terminals": 1,
+    "count": 14
+  },
+  "RotationalSpeedSensor": {
+    "params": [
+      "SecondFlange"
+    ],
+    "terminals": 3,
+    "count": 11
+  },
+  "RotationalSpring": {
+    "params": [
+      "c",
+      "dtheta0",
+      "theta0"
+    ],
+    "terminals": 2,
+    "count": 4
+  },
+  "Saturation": {
+    "params": [
+      "LowerLimit",
+      "UpperLimit"
+    ],
+    "terminals": 2,
+    "count": 6
+  },
+  "Scope": {
+    "params": [],
+    "terminals": 7,
+    "count": 171
+  },
+  "SignalDemux": {
+    "params": [
+      "Width"
+    ],
+    "terminals": 8,
+    "count": 92
+  },
+  "SignalMux": {
+    "params": [
+      "Width"
+    ],
+    "terminals": 7,
+    "count": 52
+  },
+  "SignalSelector": {
+    "params": [
+      "InputWidth",
+      "OutputIndices"
+    ],
+    "terminals": 2,
+    "count": 8
+  },
+  "SignalSwitch": {
+    "params": [
+      "Criteria",
+      "Threshold"
+    ],
+    "terminals": 4,
+    "count": 1
+  },
+  "SmallSignalPerturbation": {
+    "params": [
+      "ShowInput"
+    ],
+    "terminals": 2,
+    "count": 6
+  },
+  "SmallSignalResponse": {
+    "params": [
+      "InvertReference",
+      "ShowReference"
+    ],
+    "terminals": 2,
+    "count": 6
+  },
+  "Step": {
+    "params": [
+      "After",
+      "Before",
+      "DataType",
+      "Time"
+    ],
+    "terminals": 1,
+    "count": 43
+  },
+  "Subsystem": {
+    "params": [
+      "A",
+      "Action",
+      "After",
+      "AllowStarConnection",
+      "Amplitude",
+      "Animate",
+      "Before",
+      "Bias",
+      "Bx",
+      "C",
+      "C_icomp",
+      "C_parallel",
+      "C_parallel_vcomp",
+      "C_series",
+      "C_series_vcomp",
+      "CarrierLimits",
+      "CarrierType",
+      "Configuration",
+      "Criteria",
+      "Cth",
+      "Cx",
+      "D",
+      "DELTA_V_MIN",
+      "DPDV_MAX",
+      "DPDV_MIN",
+      "DTstate",
+      "DataType",
+      "DataTypeOverflowMode",
+      "DeadTimeSource",
+      "Declarations",
+      "Delay",
+      "Denominator",
+      "DerivativeFcn",
+      "Dgain",
+      "DialogGeometry",
+      "DirectFeedthrough",
+      "Direction",
+      "DiscretizationBehavior",
+      "Duration",
+      "DurationSource",
+      "DutyCycle",
+      "ESR",
+      "EnPolResistance",
+      "EnableWrapping",
+      "ExternalReset",
+      "F",
+      "F_init",
+      "FallingRateLimit",
+      "Fpwm",
+      "Frequency",
+      "G",
+      "G_init",
+      "GainDataType",
+      "GlobalMPPT",
+      "Gn",
+      "GnuExtensions",
+      "Hi",
+      "HighlightLevel",
+      "I_SCn",
+      "IconShape",
+      "Igain",
+      "Imax",
+      "Imin",
+      "Index",
+      "InitialConditionSource",
+      "InitialOutput",
+      "InitialState",
+      "InputTypes",
+      "InputVariables",
+      "InputWidth",
+      "Inputs",
+      "InternalConstantValues",
+      "InternalConstants",
+      "InternalVariableValues",
+      "InternalVariables",
+      "InvertReference",
+      "J",
+      "J_w",
+      "K",
+      "KFQ",
+      "KI",
+      "KV",
+      "K_SOGI",
+      "Ki",
+      "Kp",
+      "L",
+      "LangStandard",
+      "Llr",
+      "Lls",
+      "Lm",
+      "Lo",
+      "LowerLimit",
+      "MPPT_config",
+      "Max",
+      "Max_dPdV",
+      "Message",
+      "Min",
+      "Multiplication",
+      "N",
+      "Np",
+      "Ns",
+      "NumContStates",
+      "NumDiscStates",
+      "NumInputs",
+      "NumOutputs",
+      "NumZCSignals",
+      "Numerator",
+      "OffOutputValue",
+      "OffSwitchValue",
+      "Offset",
+      "OnOutputValue",
+      "OnSwitchValue",
+      "Operation",
+      "Operator",
+      "OutputDataType",
+      "OutputFcn",
+      "OutputIndices",
+      "OutputValues",
+      "OutputVariables",
+      "OutputWhenDisabled",
+      "P",
+      "PV",
+      "Parameters",
+      "Pgain",
+      "Phase",
+      "Polarity",
+      "R",
+      "R_on",
+      "R_series",
+      "R_series_vcomp",
+      "Ra",
+      "RateLimit",
+      "Rating",
+      "Rdon",
+      "RestoreCustomStateFcn",
+      "Rfe",
+      "Rgoff",
+      "Rgon",
+      "RisingRateLimit",
+      "Ron",
+      "Rounding",
+      "Rp",
+      "Rr",
+      "Rs",
+      "Rth",
+      "RuntimeCheck",
+      "SOC_init",
+      "SampleTime",
+      "SampleTimeMode",
+      "Sampling",
+      "SecondFlange",
+      "ShowInput",
+      "ShowOutput",
+      "ShowReference",
+      "ShowStatePort",
+      "Smax",
+      "StartFcn",
+      "StateSpaceInlining",
+      "StoreCustomStateFcn",
+      "SwitchModel",
+      "T",
+      "T_PLL",
+      "T_average",
+      "T_d",
+      "T_init",
+      "T_period",
+      "T_ref",
+      "Tadc",
+      "Tag",
+      "Tavg",
+      "Td",
+      "Tdt",
+      "TerminalBasedSampleTimes",
+      "TerminateFcn",
+      "Therm",
+      "Theta_ref",
+      "Threshold",
+      "Time",
+      "Tm",
+      "Tn",
+      "TpE",
+      "TransitionOrder",
+      "Trigger",
+      "TriggerType",
+      "TruthTable",
+      "Ts",
+      "Unit",
+      "Units",
+      "UpdateFcn",
+      "UpperLimit",
+      "V",
+      "V0",
+      "VOC",
+      "VRefMax",
+      "VRefMin",
+      "VStepMax",
+      "V_G",
+      "V_OCn",
+      "V_gpeak",
+      "Value",
+      "Vdc",
+      "Vdf",
+      "Vf",
+      "Vfloor",
+      "Vgrid_pk",
+      "Vin",
+      "Visibility",
+      "Vph",
+      "Vpk",
+      "Vs",
+      "W_ref",
+      "Width",
+      "Windings",
+      "X0",
+      "XFinal",
+      "ZeroCrossingSignals",
+      "a",
+      "accFactor",
+      "action",
+      "alpha",
+      "assert",
+      "aw_method",
+      "beta",
+      "buffer_size",
+      "c",
+      "c_v",
+      "cap_expZone",
+      "cap_max",
+      "cap_nom",
+      "cap_rated",
+      "carrier_limits",
+      "carrier_phaseshift",
+      "combineRevDiode",
+      "config",
+      "configuration",
+      "cont_type",
+      "contactor_control_combo",
+      "contr_design",
+      "d",
+      "d_ref",
+      "delta",
+      "device",
+      "dmin",
+      "dr",
+      "dtheta0",
+      "dx",
+      "epsilon1",
+      "epsilon2",
+      "epsilon3",
+      "epsilon_partialShading",
+      "ex_reset",
+      "ex_sat",
+      "f",
+      "f(u)",
+      "f(x)",
+      "f(x,y)",
+      "f(x,y,z)",
+      "f0",
+      "fSw",
+      "f_g",
+      "f_grid",
+      "f_nominal",
+      "f_sw",
+      "fac",
+      "fc",
+      "fn",
+      "freewheel",
+      "fs",
+      "fsw",
+      "fsw_max",
+      "g",
+      "ge",
+      "h",
+      "i_disch_nom",
+      "i_init",
+      "include_limit",
+      "include_limits",
+      "input_limits",
+      "int_method",
+      "invert",
+      "inverter_off_combo",
+      "is0",
+      "k",
+      "k_V_low0",
+      "kbc",
+      "kd",
+      "kf",
+      "ki",
+      "kp",
+      "kw",
+      "l",
+      "l_f",
+      "lambda_init",
+      "llstrings",
+      "low_limit",
+      "lower",
+      "lower_limit",
+      "m",
+      "m_v",
+      "m_w",
+      "max_per",
+      "message",
+      "min_per",
+      "modScheme",
+      "mu_r",
+      "n",
+      "nCell",
+      "nPhase",
+      "n_par",
+      "n_parallel",
+      "n_ser",
+      "n_series",
+      "ncells",
+      "neutral",
+      "numOfSearchZone",
+      "numOfStabilizationCycles",
+      "num_module",
+      "num_par",
+      "num_par_device",
+      "num_par_diode",
+      "num_ser",
+      "offset",
+      "online",
+      "output_values",
+      "p",
+      "panel_num",
+      "par_source",
+      "pattern",
+      "phase",
+      "phi",
+      "phic",
+      "polShift",
+      "psisdq0",
+      "pulsetype",
+      "pulsewidth",
+      "q",
+      "r_w",
+      "rate_in",
+      "ron_body_diode",
+      "ron_mosfet",
+      "ron_schottky_diode",
+      "rth_ch",
+      "s_init",
+      "sampling",
+      "sat_lim",
+      "scale",
+      "semiSymbol",
+      "sigma_k0",
+      "sigma_min",
+      "slope",
+      "start",
+      "stepDetection",
+      "switchModel",
+      "tDead",
+      "t_delay",
+      "t_fault",
+      "t_init",
+      "t_sample",
+      "tau",
+      "tau_C",
+      "tau_brk",
+      "tb",
+      "td",
+      "therm",
+      "therm_body_diode",
+      "therm_d",
+      "therm_d_clmp",
+      "therm_diode",
+      "therm_mosfet",
+      "therm_sw",
+      "thermal",
+      "thermalIgbt",
+      "thermalIgbtDiode",
+      "thermalMosfet",
+      "thermalMosfetDiode",
+      "thermalRevDiode",
+      "theta",
+      "theta0",
+      "thm0",
+      "thoff",
+      "thon",
+      "tinit_avg",
+      "trigger",
+      "ts",
+      "typ_fault",
+      "type",
+      "units",
+      "up_limit",
+      "upper",
+      "upper_limit",
+      "v0",
+      "v_expZone",
+      "v_full",
+      "v_init",
+      "v_nom",
+      "vf_body_diode",
+      "vf_schottky_diode",
+      "voltage",
+      "w",
+      "w0",
+      "w_fric",
+      "w_w_init",
+      "wm0",
+      "x",
+      "x0",
+      "x0_source",
+      "x_init",
+      "y",
+      "y_init",
+      "z"
+    ],
+    "terminals": 11,
+    "count": 195
+  },
+  "Sum": {
+    "params": [
+      "DataType",
+      "DataTypeOverflowMode",
+      "IconShape",
+      "Inputs"
+    ],
+    "terminals": 4,
+    "count": 48
+  },
+  "Switch": {
+    "params": [
+      "SwitchModel",
+      "f_grid",
+      "s_init"
+    ],
+    "terminals": 3,
+    "count": 24
+  },
+  "SwitchLossCalculator": {
+    "params": [
+      "ConductionLoss",
+      "GroupTypes",
+      "SwitchingLoss",
+      "T_average",
+      "TotalLoss",
+      "TurnOffLoss",
+      "TurnOnLoss"
+    ],
+    "terminals": 1,
+    "count": 9
+  },
+  "ThermalChain": {
+    "params": [
+      "Cth",
+      "Rth",
+      "T_init"
+    ],
+    "terminals": 2,
+    "count": 1
+  },
+  "ThermalGround": {
+    "params": [],
+    "terminals": 1,
+    "count": 1
+  },
+  "ThermalResistor": {
+    "params": [
+      "Rth"
+    ],
+    "terminals": 2,
+    "count": 13
+  },
+  "ThreePhaseMeter": {
+    "params": [
+      "voltage"
+    ],
+    "terminals": 9,
+    "count": 34
+  },
+  "ThreePhaseVoltageSource": {
+    "params": [
+      "V",
+      "neutral",
+      "phi",
+      "w"
+    ],
+    "terminals": 4,
+    "count": 14
+  },
+  "Thyristor": {
+    "params": [
+      "Ron",
+      "Rth",
+      "T_init",
+      "Vf",
+      "s_init",
+      "thermal"
+    ],
+    "terminals": 3,
+    "count": 11
+  },
+  "TransferFunction": {
+    "params": [
+      "Denominator",
+      "Numerator",
+      "X0"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "Transformer": {
+    "params": [
+      "Lm",
+      "Polarity",
+      "Windings",
+      "im0",
+      "n"
+    ],
+    "terminals": 8,
+    "count": 6
+  },
+  "TranslationalFriction": {
+    "params": [
+      "F_C",
+      "F_brk",
+      "c_v"
+    ],
+    "terminals": 2,
+    "count": 2
+  },
+  "TranslationalHardStop": {
+    "params": [
+      "x0",
+      "x_max",
+      "x_min"
+    ],
+    "terminals": 2,
+    "count": 1
+  },
+  "TranslationalReference": {
+    "params": [],
+    "terminals": 1,
+    "count": 3
+  },
+  "TranslationalSpeedSensor": {
+    "params": [
+      "SecondFlange"
+    ],
+    "terminals": 2,
+    "count": 1
+  },
+  "TriangleGenerator": {
+    "params": [
+      "Delay",
+      "DutyCycle",
+      "Max",
+      "Min",
+      "f"
+    ],
+    "terminals": 1,
+    "count": 4
+  },
+  "VoltageSource": {
+    "params": [
+      "DiscretizationBehavior",
+      "StateSpaceInlining"
+    ],
+    "terminals": 3,
+    "count": 14
+  },
+  "Voltmeter": {
+    "params": [],
+    "terminals": 3,
+    "count": 108
+  },
+  "WireMux": {
+    "params": [
+      "Width"
+    ],
+    "terminals": 4,
+    "count": 2
+  },
+  "XYPlot": {
+    "params": [],
+    "terminals": 2,
+    "count": 12
+  },
+  "ZeroOrderHold": {
+    "params": [
+      "Ts"
+    ],
+    "terminals": 2,
+    "count": 6
+  }
+}

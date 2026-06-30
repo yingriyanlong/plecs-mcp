@@ -14,3 +14,8 @@ copied from any sample.
 
 Regenerate any of these with `plecs_build_model` (see
 `docs/development-plan.md` and the M2 entry in `PROGRESS.md`).
+
+**Layout note:** `agent_boost` uses the two-rail demo-grade layout
+(see `docs/plecs-layout-conventions.md`); `agent_buck` is hand-authored and tidy;
+`agent_buckboost` is electrically verified but its layout is not yet demo-grade
+(tracked in PROGRESS.md).

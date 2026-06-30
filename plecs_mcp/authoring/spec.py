@@ -22,7 +22,8 @@ class Component(BaseModel):
 class Connection(BaseModel):
     kind: str = "Wire"              # "Wire" (power net) or "Signal" (control)
     src: list                       # [component_name, terminal_index]
-    dsts: list                      # [[component_name, terminal_index], ...]
+    points: list = []               # waypoints after src, e.g. [[40, 95]]
+    dsts: list                      # [name, term] or [name, term, [[x,y],...]] (per-branch points)
 
 
 class Output(BaseModel):

@@ -46,3 +46,4 @@ M6 hardening + evaluations.
 | 2026-06-30 | Connectivity treated as symbolic (name+terminal) | Confirmed by from-scratch buck loading clean on live PLECS. |
 | 2026-06-30 | M1: param tuning via `ModelVars` in simulate opts; results behind handles | Matches PLECS scripting (override init vars per run); keeps agent context small. |
 | 2026-06-30 | M2: serialize `.plecs` with NO wire `Points`; connectivity symbolic | Verified boost + buck-boost built from scratch load+simulate correctly; simpler/robuster specs. |
+| 2026-06-30 | Harvest all PLECS demos into KB LIBRARY + template catalog; two-rail layout convention | The 89 demos are the layout gold standard; codifying them gives ~92-type coverage and clean generation. See docs/plecs-layout-conventions.md. |

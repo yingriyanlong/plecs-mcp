@@ -1,7 +1,7 @@
 """Authoring logic + MCP tool registration.
 
-Core functions are module-level (callable from tests and other code); the MCP
-tools are thin wrappers registered onto the FastMCP instance.
+Core functions are module-level (callable from tests/other code); the MCP tools
+are thin wrappers registered onto the FastMCP instance.
 """
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ import os
 import tempfile
 
 from ..rpc import client
+from . import templates
 from .kb import describe as kb_describe
 from .kb import known_types, validate_spec
 from .serializer import serialize
@@ -65,31 +66,45 @@ def validate_model(model_path: str) -> dict:
 def register_authoring_tools(mcp) -> None:
     @mcp.tool()
     def plecs_list_component_types(domain: str | None = None) -> dict:
-        """List component types in the knowledge base. Optional domain filter:
-        electrical, control, measurement, io."""
+        """List known component types (curated core + full demo-harvested library).
+        Optional domain filter for core: electrical, control, measurement, io."""
         return list_types(domain)
 
     @mcp.tool()
     def plecs_describe_component(type_name: str) -> dict:
-        """Return the terminal map (index -> role) and parameters for a component
-        type, so connections use correct terminal indices."""
+        """Return terminal map/count and parameters for a component type. Core
+        types include terminal ROLES (drain/source/gate); library types (from the
+        PLECS demos) include terminal count + parameter names."""
         return describe_type(type_name)
 
     @mcp.tool()
     def plecs_build_model(spec: dict, out_dir: str | None = None, load: bool = True) -> dict:
-        """Build a .plecs model from a structured spec, write it to disk, and
-        (by default) load it into PLECS to validate.
+        """Build a .plecs model from a structured spec, write it, and (by default)
+        load it into PLECS to validate.
 
-        Spec shape: {name, init (InitializationCommands string), time_span,
-        components: [{type, name, params}], connections:
-        [{kind: "Wire"|"Signal", src: [name, terminal], dsts: [[name, terminal], ...]}],
-        outputs: [{name, probe_component, probe_signal, index}]}.
-        Connectivity is symbolic; use plecs_describe_component for terminal numbering.
-        """
+        Spec: {name, init, time_span, components: [{type, name, params, position,
+        direction, flipped}], connections: [{kind: "Wire"|"Signal", src: [name,
+        term], points: [[x,y],...], dsts: [[name, term] | [name, term, [[x,y]]]]}],
+        outputs: [{name, probe_component, probe_signal, index, position}]}.
+        Connectivity is symbolic (component name + terminal index). For clean
+        layout follow docs/plecs-layout-conventions.md (two-rail grid + Points)."""
         return build_model(spec, out_dir=out_dir, load=load)
 
     @mcp.tool()
     def plecs_validate_model(model_path: str) -> dict:
-        """Load a .plecs file in PLECS and report whether it loads cleanly
-        (catches connectivity / parameter errors)."""
+        """Load a .plecs file in PLECS and report whether it loads cleanly."""
         return validate_model(model_path)
+
+    @mcp.tool()
+    def plecs_list_templates(query: str | None = None) -> dict:
+        """List reference topologies from the bundled PLECS demos (89 models) —
+        the gold standard for layout. Filter by name or component type (e.g.
+        'buck', 'flyback', 'inverter', 'thermal'). Set PLECS_DEMOS_DIR to resolve
+        absolute paths, then load one with plecs_load_model."""
+        return templates.list_templates(query)
+
+    @mcp.tool()
+    def plecs_describe_template(name: str) -> dict:
+        """Return a demo template's relative/absolute path and component types,
+        so it can be loaded as a clean starting point or studied for layout."""
+        return templates.describe_template(name)

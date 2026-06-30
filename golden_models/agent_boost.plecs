@@ -60,9 +60,9 @@ Plecs {
       Type          DCVoltageSource
       Name          "VDCin"
       Show          on
-      Position      [85, 100]
-      Direction     up
-      Flipped       off
+      Position      [40, 140]
+      Direction     down
+      Flipped       on
       LabelPosition south
       Parameter {
         Variable      "V"
@@ -74,8 +74,8 @@ Plecs {
       Type          Inductor
       Name          "L1"
       Show          on
-      Position      [175, 100]
-      Direction     up
+      Position      [100, 95]
+      Direction     left
       Flipped       off
       LabelPosition south
       Parameter {
@@ -88,7 +88,7 @@ Plecs {
       Type          Mosfet
       Name          "FET1"
       Show          on
-      Position      [265, 100]
+      Position      [195, 140]
       Direction     up
       Flipped       off
       LabelPosition south
@@ -102,9 +102,9 @@ Plecs {
       Type          Diode
       Name          "D1"
       Show          on
-      Position      [355, 100]
-      Direction     up
-      Flipped       off
+      Position      [240, 95]
+      Direction     right
+      Flipped       on
       LabelPosition south
       Parameter {
         Variable      "Vf"
@@ -121,9 +121,9 @@ Plecs {
       Type          Capacitor
       Name          "C1"
       Show          on
-      Position      [445, 100]
-      Direction     up
-      Flipped       off
+      Position      [285, 140]
+      Direction     down
+      Flipped       on
       LabelPosition south
       Parameter {
         Variable      "C"
@@ -135,8 +135,8 @@ Plecs {
       Type          Resistor
       Name          "R1"
       Show          on
-      Position      [535, 100]
-      Direction     up
+      Position      [340, 140]
+      Direction     down
       Flipped       off
       LabelPosition south
       Parameter {
@@ -149,8 +149,8 @@ Plecs {
       Type          PulseGenerator
       Name          "PWM"
       Show          on
-      Position      [625, 100]
-      Direction     up
+      Position      [140, 200]
+      Direction     right
       Flipped       off
       LabelPosition south
       Parameter {
@@ -168,7 +168,7 @@ Plecs {
       Type          PlecsProbe
       Name          "Out1_prb"
       Show          on
-      Position      [735, 100]
+      Position      [370, 95]
       Direction     right
       Flipped       off
       LabelPosition south
@@ -182,7 +182,7 @@ Plecs {
       Type          Output
       Name          "Out1"
       Show          on
-      Position      [795, 100]
+      Position      [430, 95]
       Direction     right
       Flipped       off
       LabelPosition south
@@ -201,6 +201,7 @@ Plecs {
       Type          Wire
       SrcComponent  "VDCin"
       SrcTerminal   1
+      Points        [40, 95]
       DstComponent  "L1"
       DstTerminal   1
     }
@@ -208,6 +209,7 @@ Plecs {
       Type          Wire
       SrcComponent  "L1"
       SrcTerminal   2
+      Points        [195, 95]
       Branch {
         DstComponent  "FET1"
         DstTerminal   1
@@ -219,31 +221,37 @@ Plecs {
     }
     Connection {
       Type          Wire
-      SrcComponent  "D1"
-      SrcTerminal   2
+      SrcComponent  "C1"
+      SrcTerminal   1
+      Points        [285, 95]
       Branch {
-        DstComponent  "C1"
-        DstTerminal   1
+        Points        [340, 95]
+        DstComponent  "R1"
+        DstTerminal   2
       }
       Branch {
-        DstComponent  "R1"
-        DstTerminal   1
+        DstComponent  "D1"
+        DstTerminal   2
       }
     }
     Connection {
       Type          Wire
-      SrcComponent  "VDCin"
-      SrcTerminal   2
+      SrcComponent  "R1"
+      SrcTerminal   1
+      Points        [340, 185]
       Branch {
-        DstComponent  "FET1"
-        DstTerminal   2
-      }
-      Branch {
+        Points        [285, 185]
         DstComponent  "C1"
         DstTerminal   2
       }
       Branch {
-        DstComponent  "R1"
+        Points        [195, 185]
+        DstComponent  "FET1"
+        DstTerminal   2
+      }
+      Branch {
+        Points        [40, 185]
+        DstComponent  "VDCin"
         DstTerminal   2
       }
     }
