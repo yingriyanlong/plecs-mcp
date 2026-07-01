@@ -194,3 +194,21 @@ confirm the readout.
 
 Note: an optional semantic layer (sentence-transformers embeddings, like the RAG
 mcp) could improve recall; the stdlib keyword index is the dependency-free default.
+
+## MCP best-practice pass (2026-07-01)
+Adopted patterns from well-designed MCPs (MATLAB MCP: resources + static check +
+capability detection; mcp-builder: annotations/resources/prompts).
+- plecs_capabilities: one-call health/setup report (PLECS online, KB sizes,
+  templates dir, docs index, config) — like MATLAB detect_toolboxes.
+- plecs_check_spec: offline static validation (unknown types, bad terminals,
+  floating electrical terminals, missing source) — like MATLAB check_matlab_code.
+- MCP Resources: plecs://components, plecs://conventions/layout,
+  plecs://conventions/cscript. MCP Prompts: design_converter, tune_control_loop.
+- Tool annotations (readOnly/openWorld hints) on the new tools.
+- Verified via stdio: 21 tools, 3 resources, 2 prompts; check_spec flags floating
+  terminals offline. Offline pytest: 23 passed.
+
+Roadmap (proposed next): full annotation pass + output schemas on all tools;
+an eval runner that executes eval/evaluation.xml on live PLECS; optional semantic
+docs layer (embeddings); plecs_simulate_batch (parallel sweeps); structured
+logging; subsystem authoring (removes the flat-only control limitation).

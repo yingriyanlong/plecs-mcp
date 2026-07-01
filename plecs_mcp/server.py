@@ -13,6 +13,7 @@ import re
 from typing import Optional
 
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from .config import load_config
 from .results import STORE
@@ -278,8 +279,69 @@ def plecs_doc_for_component(type_name: str) -> dict:
             "text": d["text"][:6000]}
 
 
+_RO = ToolAnnotations(readOnlyHint=True, openWorldHint=True)
+
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True))
+def plecs_capabilities() -> dict:
+    """One-call health + capability report: PLECS reachability + config, whether the
+    docs index is built, the demos dir, knowledge-base sizes, and golden models.
+    Use this first to diagnose setup before other calls."""
+    cfg = load_config()
+    ping = client.ping(cfg)
+    from .authoring import templates
+    from .authoring.kb import CORE, LIBRARY, known_types
+    from .docs.search import default_dir, get_index
+    idx = get_index()
+    return {
+        "plecs": {"online": ping["online"], "host": cfg.host, "port": cfg.port,
+                  "detail": ping["detail"]},
+        "knowledge_base": {"core_types": len(CORE), "library_types": len(LIBRARY),
+                           "total_types": len(known_types())},
+        "templates": {"count": len(templates.CATALOG),
+                      "demos_dir": templates.demos_root() or "(set PLECS_DEMOS_DIR)"},
+        "docs": {"index_built": idx is not None, "pages": len(idx.index) if idx else 0,
+                 "dir": default_dir()},
+        "config": {"model_dir": os.environ.get("PLECS_MCP_MODEL_DIR", "(system temp)"),
+                   "plot_dir": os.environ.get("PLECS_MCP_PLOT_DIR", "(system temp)")},
+    }
+
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
+def plecs_check_spec(spec: dict) -> dict:
+    """Statically validate a circuit spec WITHOUT touching PLECS: unknown component
+    types, invalid terminal indices, floating electrical terminals (not wired), and
+    whether a source exists. A fast pre-check before plecs_build_model."""
+    from .authoring.kb import CORE, validate_spec
+    from .authoring.spec import CircuitSpec
+    try:
+        s = CircuitSpec(**spec)
+    except Exception as e:
+        return {"ok": False, "errors": [f"invalid spec: {e}"], "warnings": []}
+    errors = validate_spec(s)
+    referenced = set()
+    for conn in s.connections:
+        if conn.kind != "Wire":
+            continue
+        referenced.add((conn.src[0], int(conn.src[1])))
+        for d in conn.dsts:
+            referenced.add((d[0], int(d[1])))
+    warnings = []
+    for c in s.components:
+        info = CORE.get(c.type)
+        if info and info.get("domain") == "electrical":
+            for term, role in info["terminals"].items():
+                if (c.name, term) not in referenced:
+                    warnings.append(f"floating: {c.type} '{c.name}' terminal {term} ({role}) not wired")
+    if not any(c.type in ("DCVoltageSource", "DCCurrentSource") for c in s.components):
+        warnings.append("no source (DCVoltageSource/DCCurrentSource) in the circuit")
+    return {"ok": not errors, "errors": errors, "warnings": warnings}
+
+
 from .authoring.tools import register_authoring_tools
 register_authoring_tools(mcp)
+from .resources import register_resources_and_prompts
+register_resources_and_prompts(mcp)
 
 
 def main() -> None:

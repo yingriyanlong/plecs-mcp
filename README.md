@@ -96,13 +96,14 @@ the `claude mcp add` command's environment.
 
 ---
 
-## Tools (19)
+## Tools (21)
 
-**Connectivity & models** — `plecs_status`, `plecs_load_model`, `plecs_close_model`
+**Connectivity & models** — `plecs_status`, `plecs_capabilities` (one-call health/setup report), `plecs_load_model`, `plecs_close_model`
 (load closes-then-loads so it never serves a stale model).
 
 **Authoring** — `plecs_build_model` (omit coordinates for automatic two-rail
-layout; supports C-Script blocks), `plecs_validate_model`,
+layout; supports C-Script blocks), `plecs_check_spec` (offline static validation),
+`plecs_validate_model`,
 `plecs_list_component_types`, `plecs_describe_component`, `plecs_list_templates`,
 `plecs_describe_template`.
 
@@ -115,6 +116,10 @@ layout; supports C-Script blocks), `plecs_validate_model`,
 
 **Documentation** — `plecs_search_docs`, `plecs_get_doc`, `plecs_doc_for_component`
 (your installed manual; build the index in Step 4).
+
+**Resources** (browse without a tool call): `plecs://components`,
+`plecs://conventions/layout`, `plecs://conventions/cscript`.
+**Prompts** (guided workflows): `design_converter`, `tune_control_loop`.
 
 ---
 
