@@ -15,6 +15,9 @@ import xmlrpc.client
 from typing import Any, Optional
 
 from ..config import Config, load_config
+from ..logging_setup import get_logger
+
+_log = get_logger()
 
 
 def _proxy(cfg: Optional[Config] = None) -> xmlrpc.client.ServerProxy:
@@ -40,6 +43,7 @@ def ping(cfg: Optional[Config] = None) -> dict[str, Any]:
             "detail": f"xmlrpc fault (expected for ping): {f.faultString[:80]}",
         }
     except OSError as e:
+        _log.warning("PLECS not reachable at %s:%s (%s)", cfg.host, cfg.port, e)
         return {
             "online": False, "host": cfg.host, "port": cfg.port,
             "detail": (
@@ -49,6 +53,7 @@ def ping(cfg: Optional[Config] = None) -> dict[str, Any]:
         }
 
 
+
 def load(path: str, cfg: Optional[Config] = None):
     """Load a .plecs model by absolute path (plecs.load).
 
@@ -56,6 +61,7 @@ def load(path: str, cfg: Optional[Config] = None):
     of the same name first to guarantee the on-disk version is (re)loaded.
     """
     import os
+    _log.info("load %s", path)
     p = _proxy(cfg)
     name = os.path.splitext(os.path.basename(path))[0]
     try:
@@ -72,6 +78,7 @@ def close(name: str, cfg: Optional[Config] = None):
 
 def simulate(name: str, opts: Optional[dict] = None, cfg: Optional[Config] = None):
     """Run a simulation (plecs.simulate); returns {'Time': [...], 'Values': [...]}."""
+    _log.info("simulate %s vars=%s", name, (opts or {}).get("ModelVars"))
     p = _proxy(cfg)
     return p.plecs.simulate(name, opts) if opts else p.plecs.simulate(name)
 

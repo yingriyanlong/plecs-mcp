@@ -16,6 +16,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 
 from .config import load_config
+from .logging_setup import get_logger
 from .results import STORE
 from .results.analysis import metrics as _metrics
 from .results.analysis import bode as _bode
@@ -369,6 +370,9 @@ register_resources_and_prompts(mcp)
 
 
 def main() -> None:
+    from .logging_setup import configure
+    configure()
+    get_logger().info("plecs-mcp starting")
     mcp.run()
 
 
