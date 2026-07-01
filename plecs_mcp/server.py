@@ -79,13 +79,16 @@ def plecs_simulate(
     model_name: Optional[str] = None,
     model_vars: Optional[dict] = None,
     solver_opts: Optional[dict] = None,
+    metrics: Optional[list] = None,
+    metric_signal: int = 0,
 ) -> dict:
     """Run a simulation and store the result server-side.
 
     ``model_vars`` overrides model InitializationCommands variables for this run
     (e.g. {"Vi": 48, "D": 0.4}); ``solver_opts`` overrides solver settings.
     Returns a ``handle`` plus a summary (point count, signal count, time span,
-    last values). Use plecs_analyze_waveform / plecs_plot_waveform on the handle.
+    last values). Use plecs_analyze_waveform / plecs_plot_waveform on the handle. Pass `metrics`
+    (e.g. ["steady_state","ripple_pp"]) to get them inline in one call.
     """
     name = model_name or _STATE["current_model"]
     if not name:
@@ -99,7 +102,7 @@ def plecs_simulate(
     time, values = to_signals(r.get("Time") or [], r.get("Values") or [])
     handle = STORE.add(name, time, values)
     last = [sig[-1] for sig in values] if (values and time) else []
-    return {
+    out = {
         "ok": True,
         "handle": handle,
         "model": name,
@@ -109,6 +112,9 @@ def plecs_simulate(
         "t_end": time[-1] if time else None,
         "last_values": last,
     }
+    if metrics and values and 0 <= metric_signal < len(values):
+        out["metrics"] = _metrics(time, values[metric_signal], names=metrics)
+    return out
 
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
