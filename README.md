@@ -8,8 +8,8 @@ them out like the official demos, set parameters, simulate, sweep, run
 AC/steady-state analyses, read back metrics, drive **C-Script** controllers, and
 search the PLECS manual — all over PLECS's native XML-RPC interface.
 
-> Status: milestones **M0–M6 complete** + auto-layout, C-Script control and an
-> offline docs KB, all verified on live PLECS 4.9.5. See
+> Status: **M0–M6 complete** + auto-layout, subsystem & C-Script control, thermal
+> readout, and an offline docs KB — all verified on live PLECS 4.9.5. See
 > [CHANGELOG.md](CHANGELOG.md) and [PROGRESS.md](PROGRESS.md).
 
 ---
@@ -98,7 +98,7 @@ the `claude mcp add` command's environment.
 
 ---
 
-## Tools (21)
+## Tools (22)
 
 **Connectivity & models** — `plecs_status`, `plecs_capabilities` (one-call health/setup report), `plecs_load_model`, `plecs_close_model`
 (load closes-then-loads so it never serves a stale model).
@@ -110,7 +110,8 @@ layout; supports C-Script blocks), `plecs_check_spec` (offline static validation
 `plecs_describe_template`.
 
 **Parameters & simulation** — `plecs_set_param`, `plecs_simulate` (with
-`model_vars` / `solver_opts`).
+`model_vars` / `solver_opts`; optional inline `metrics`), `plecs_simulate_batch`
+(many parameter sets in one call).
 
 **Results & analysis** — `plecs_analyze_waveform`, `plecs_get_waveform`,
 `plecs_plot_waveform`, `plecs_scan_parameter` (server-side sweep),
@@ -125,12 +126,26 @@ layout; supports C-Script blocks), `plecs_check_spec` (offline static validation
 
 ---
 
-## Quick usage
+## Usage examples
 
-Once connected, just ask Claude in natural language, e.g. *"Build a 24 V→12 V,
-100 kHz buck, sweep the duty and report Vo"* or *"Search the PLECS docs for the
-C-Script output function"*. Programmatic example (auto-layout — no coordinates):
+You drive everything in **natural language** — the agent picks the tools. Good openers:
 
+- *"Check the PLECS setup"* → `plecs_capabilities`
+- *"Build a 24 V→12 V, 100 kHz buck, sweep the duty, and report Vo"* → build + scan
+- *"Regulate that buck to 15 V with a PI controller and show overshoot/settling"*
+- *"Search the PLECS docs for the C-Script output function"* → `plecs_search_docs`
+- *"What are a MOSFET's terminals and parameters?"* → `plecs_describe_component` / `plecs_doc_for_component`
+
+The tool-call shapes below show the non-obvious specs.
+
+### 1. Health check (start here)
+```python
+plecs_capabilities()
+# -> {plecs:{online,host,port}, knowledge_base:{core_types,library_types,total_types},
+#     templates:{count,demos_dir}, docs:{index_built,pages}, config:{...}}
+```
+
+### 2. Build a converter — auto-layout, no coordinates
 ```python
 spec = {
   "name": "buck", "time_span": "5e-3",
@@ -153,7 +168,74 @@ spec = {
   ],
   "outputs": [{"name": "Out1", "probe_component": "C1", "probe_signal": "Capacitor voltage"}]
 }
-# plecs_build_model(spec) -> writes buck.plecs, auto-lays it out, loads it into PLECS.
+plecs_check_spec(spec)     # offline: unknown types / bad terminals / floating pins / no source
+plecs_build_model(spec)    # writes buck.plecs, auto-lays it out, loads into PLECS
+```
+
+### 3. Simulate, sweep, analyze
+```python
+plecs_simulate("buck", model_vars={"D": 0.4}, metrics=["steady_state", "ripple_pp"])
+plecs_simulate_batch([{"D": 0.3}, {"D": 0.5}, {"D": 0.7}])          # per-run metrics
+plecs_scan_parameter("D", 0.2, 0.7, 6, metric="steady_state")       # table + optimum
+plecs_run_analysis("Control to Output TF (Impulse Response)")       # -> dc_gain_db,
+                                                                    #    gain_crossover_hz, phase_margin_deg
+```
+
+### 4. Encapsulate control in a Subsystem
+A component with a `schematic` becomes a PLECS **Subsystem**; its inner `Input`/`Output`
+port components (with `Index`) become the subsystem's external terminals. The top level
+then shows just the power stage + one clean block.
+```python
+{"type": "Subsystem", "name": "Controller", "schematic": {
+  "components": [
+    {"type": "Input",  "name": "vo",   "params": {"Index": "1"}},   # ext terminal 1
+    {"type": "Constant", "name": "Vref", "params": {"Value": "Vref_v", "DataType": "10"}},
+    {"type": "Sum", "name": "Err", "params": {"Inputs": "|+-"}},     # out=1, in+=2, in-=3
+    {"type": "TransferFunction", "name": "PI",
+     "params": {"Numerator": "[Kp Ki]", "Denominator": "[1 0]", "X0": "0"}},
+    {"type": "Output", "name": "duty", "params": {"Index": "2"}}     # ext terminal 2
+  ],
+  "connections": [
+    {"kind": "Signal", "src": ["vo", 1],   "dsts": [["Err", 3]]},
+    {"kind": "Signal", "src": ["Vref", 1], "dsts": [["Err", 2]]},
+    {"kind": "Signal", "src": ["Err", 1],  "dsts": [["PI", 1]]},
+    {"kind": "Signal", "src": ["PI", 2],   "dsts": [["duty", 1]]}
+  ]}}
+# parent: Signal Vm.3 -> Controller.1 (input); Controller.2 -> ... (output)
+```
+
+### 5. C-Script controller
+A `CScript` block runs your C. Code sections are string params; macros `Input(i)`,
+`Output(i)`, `DiscState(i)`, `ParamRealData(i,0)` (see [docs/cscript-notes.md](docs/cscript-notes.md)).
+```python
+{"type": "CScript", "name": "Ctrl", "params": {
+  "NumInputs": "1", "NumOutputs": "1", "NumDiscStates": "1", "Ts": "Tc",
+  "Parameters": "Vref Kp Ki Tc",
+  "OutputFcn": "double e=ParamRealData(0,0)-Input(0);\nOutput(0)=ParamRealData(1,0)*e+DiscState(0);",
+  "UpdateFcn": "DiscState(0)+=ParamRealData(2,0)*ParamRealData(3,0)*(ParamRealData(0,0)-Input(0));"}}
+```
+
+### 6. Thermal circuit (HeatPipe connections)
+Thermal wires use `kind: "HeatPipe"`. Read a thermal quantity with a probe → outport.
+```python
+components = [
+  {"type": "ConstantTemperatureGnd", "name": "Thot", "params": {"T": "100"}},
+  {"type": "HeatFlowMeter", "name": "Wm"},
+  {"type": "ThermalResistor", "name": "Rth", "params": {"Rth": "2"}},   # note: Rth, not R
+  {"type": "ThermalGround", "name": "Gnd"}]
+connections = [
+  {"kind": "HeatPipe", "src": ["Thot", 1], "dsts": [["Wm", 2]]},
+  {"kind": "HeatPipe", "src": ["Wm", 1],   "dsts": [["Rth", 1]]},
+  {"kind": "HeatPipe", "src": ["Rth", 2],  "dsts": [["Gnd", 1]]}]
+outputs = [{"name": "Out1", "probe_component": "Wm", "probe_signal": "Measured heat flow"}]
+# -> heat flow = 100 / 2 = 50 W
+```
+
+### 7. Start from an official demo (perfect layout)
+```python
+plecs_list_templates("flyback")        # -> matching demo names
+plecs_describe_template("flyback_converter")   # -> path + component types
+plecs_load_model(path)                 # then simulate / analyze / sweep
 ```
 
 ---
@@ -175,7 +257,8 @@ spec = {
 
 `golden_models/` holds engine-generated, verified baselines: open-loop buck
 (12.00 V), boost (48.02 V), inverting buck-boost (−24.07 V), a PI closed-loop buck
-(15.00 V, 0.25% overshoot, 7.9 ms), and a **C-Script**-controlled buck.
+(15.00 V, 0.25% overshoot, 7.9 ms), a **C-Script**-controlled buck, a buck with the
+controller in a **Subsystem** block, and a minimal **thermal** circuit (50 W).
 
 ```powershell
 ruff check .
