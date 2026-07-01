@@ -10,6 +10,14 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "yingriyanlong" }]
+keywords = ["plecs", "mcp", "power-electronics", "simulation", "xml-rpc", "converter"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+]
 dependencies = [
     "mcp>=1.0",       # MCP SDK / FastMCP stdio server
     "pydantic>=2.0",  # typed circuit specs
@@ -19,6 +27,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff"]
+
+[project.urls]
+Homepage = "https://github.com/yingriyanlong/plecs-mcp"
+Repository = "https://github.com/yingriyanlong/plecs-mcp"
+Issues = "https://github.com/yingriyanlong/plecs-mcp/issues"
 
 [project.scripts]
 plecs-mcp = "plecs_mcp.server:main"
@@ -35,3 +48,4 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
+ignore = ["E501"]

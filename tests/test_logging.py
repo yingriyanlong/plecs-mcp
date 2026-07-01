@@ -1,4 +1,3 @@
-import logging
 
 from plecs_mcp.logging_setup import configure, get_logger
 

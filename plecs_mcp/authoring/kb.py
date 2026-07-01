@@ -31,7 +31,6 @@ CORE: dict[str, dict] = {
                         "params": {"Hi": "1", "Lo": "0", "f": "1e3", "DutyCycle": "0.5", "Delay": "0", "DataType": "10"}},
     "Constant": {"domain": "control", "terminals": {1: "out"}, "params": {"Value": "0", "DataType": "10"}},
     "Gain": {"domain": "control", "terminals": {1: "in", 2: "out"}, "params": {"K": "1"}},
-    "Sum": {"domain": "control", "terminals": {1: "in1", 2: "in2", 3: "out"}, "params": {"Inputs": "+-"}},
     "Step": {"domain": "control", "terminals": {1: "out"}, "params": {"Time": "0", "Before": "0", "After": "1"}},
     "Sum": {"domain": "control", "terminals": {1: "out", 2: "in+", 3: "in-"}, "params": {"Inputs": "|+-"}},
     "TransferFunction": {"domain": "control", "terminals": {1: "in", 2: "out"}, "params": {"Numerator": "[1]", "Denominator": "[1]", "X0": "0"}},

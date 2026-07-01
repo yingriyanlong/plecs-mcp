@@ -233,3 +233,12 @@ back" gap is now CLOSED for a purpose-built model. (The remaining gap is only
 semiconductor loss data / junction-temp, which needs a thermal description.)
 Added verified thermal types (with terminal roles + param Rth) to the KB CORE.
 The docs KB proved its worth: found the `Rth` param name instead of guessing.
+
+## #9 CI + packaging (2026-07-01)
+- .github/workflows/ci.yml: GitHub Actions runs ruff + the offline pytest suite on
+  Python 3.10/3.11/3.12 for every push/PR (PLECS-dependent checks stay manual).
+- Made the codebase ruff-clean (ignored E501 for long tool-description strings;
+  fixed a real duplicate KB key "Sum" -- the later, demo-correct entry was winning).
+- pyproject: project URLs, keywords, classifiers; README CI badge.
+- All optimization items done: #1 annotations, #3 batch, #5 logging, #6 inline
+  metrics, #7 subsystems, #8 thermal readout, #9 CI (2 & 4 skipped per request).

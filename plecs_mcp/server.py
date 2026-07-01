@@ -15,11 +15,13 @@ from typing import Optional
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 
+from .authoring.tools import register_authoring_tools
 from .config import load_config
 from .logging_setup import get_logger
+from .resources import register_resources_and_prompts
 from .results import STORE
-from .results.analysis import metrics as _metrics
 from .results.analysis import bode as _bode
+from .results.analysis import metrics as _metrics
 from .results.analysis import to_signals
 from .results.plot import plot_series
 from .rpc import client
@@ -369,9 +371,7 @@ def plecs_check_spec(spec: dict) -> dict:
     return {"ok": not errors, "errors": errors, "warnings": warnings}
 
 
-from .authoring.tools import register_authoring_tools
 register_authoring_tools(mcp)
-from .resources import register_resources_and_prompts
 register_resources_and_prompts(mcp)
 
 

@@ -1,5 +1,7 @@
 # plecs-mcp
 
+[![CI](https://github.com/yingriyanlong/plecs-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/yingriyanlong/plecs-mcp/actions/workflows/ci.yml)
+
 An MCP (Model Context Protocol) server that gives an AI agent **full-scope control
 of PLECS** power-electronics simulation: build circuits from a netlist, auto-lay
 them out like the official demos, set parameters, simulate, sweep, run
@@ -180,9 +182,4 @@ ruff check .
 .\.venv\Scripts\python.exe -m pytest -q     # offline tests; PLECS tests run manually on Windows
 ```
 See [eval/](eval/) for the verifiable evaluation suite and
-[docs/](docs/) for layout, C-Script and thermal/magnetic notes.
-
-## License
-
-MIT © 2026 yingriyanlong. The PLECS manual extracted by the docs KB is Plexim
-copyright and is never committed (kept local in `.docs_cache/`).
+[docs/](docs/) for layout, C-Script 

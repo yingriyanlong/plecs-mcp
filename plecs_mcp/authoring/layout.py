@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from collections import deque
 
-from .spec import Connection, CircuitSpec
+from .spec import CircuitSpec, Connection
 
 TOP, MID, BOT = 95, 140, 185
 X0, DX = 60, 70
