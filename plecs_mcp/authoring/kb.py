@@ -38,6 +38,10 @@ CORE: dict[str, dict] = {
     "Saturation": {"domain": "control", "terminals": {1: "in", 2: "out"}, "params": {"UpperLimit": "1", "LowerLimit": "0"}},
     "RelationalOperator": {"domain": "control", "terminals": {1: "in1", 2: "in2", 3: "out"}, "params": {"Operator": "6"}},
     "TriangleGenerator": {"domain": "control", "terminals": {1: "out"}, "params": {"Min": "0", "Max": "1", "f": "1e3", "DutyCycle": "0.5"}},
+    "CScript": {"domain": "control", "terminals": {1: "in", 2: "out"},
+                "params": {"NumInputs": "1", "NumOutputs": "1", "NumContStates": "0",
+                           "NumDiscStates": "0", "NumZCSignals": "0", "DirectFeedthrough": "1",
+                           "Ts": "0", "OutputFcn": ""}},
     "PlecsProbe": {"domain": "measurement", "terminals": {1: "out"}, "params": {}},
     "Output": {"domain": "io", "terminals": {1: "in"}, "params": {"Index": "1", "Width": "-1"}},
 }
@@ -101,7 +105,13 @@ def describe(type_name: str) -> dict | None:
     return None
 
 
+_VARIABLE_TERMINALS = {"CScript", "Sum", "SignalMux", "SignalDemux", "Product",
+                       "Subsystem", "ConfigurableSubsystem", "ModelReference", "Reference"}
+
+
 def _terminal_ok(type_name: str, term: int) -> bool:
+    if type_name in _VARIABLE_TERMINALS:
+        return term >= 1
     if type_name in CORE:
         return term in CORE[type_name]["terminals"]
     if type_name in LIBRARY:

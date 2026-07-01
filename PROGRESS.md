@@ -160,3 +160,20 @@ plecs_list_templates. Running + reading them works now.
 Remaining future work (documented honestly): control-block & thermal/magnetic
 auto-layout; thermal/magnetic authoring (loss tables, permeance nets); generating
 AC-analysis blocks; broader auto-layout (bridges, 3-phase).
+
+## C-Script control (2026-07-01)
+- Added CScript to the KB (variable-port block; validation allows any terminal
+  index) and Terminal{Output} emission for manual Output components. C-Script code
+  sections are ordinary string params (escaped like InitializationCommands).
+- Verified end-to-end on live PLECS: minimal CScript computes Output=2*Input=10;
+  golden_models/agent_buck_cscript = digital PI (discrete integrator in UpdateFcn,
+  ParamRealData/Input/Output/DiscState macros) regulates buck to Vo=15.00 V
+  (0.25% overshoot, 7.9 ms), tracks Vref=10 -> 10.00 V. See docs/cscript-notes.md.
+
+## Correction to M5 (honest)
+Earlier I wrote M5 "verified domain-agnostic on thermal demo". More precisely: the
+thermal demo LOADS and SIMULATES through the MCP without error, but plecs_simulate
+returned 0 signals (that demo routes junction temp to a Scope, not an RPC outport),
+so reading a thermal quantity back end-to-end is NOT yet verified. The tools are
+domain-agnostic in principle; a model that exposes Tj as an outport is needed to
+confirm the readout.

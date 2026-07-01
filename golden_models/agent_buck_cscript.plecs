@@ -1,0 +1,450 @@
+Plecs {
+  Name          "agent_buck_cscript"
+  Version       "4.7"
+  CircuitModel  "ContStateSpace"
+  StartTime     "0.0"
+  TimeSpan      "3e-2"
+  Timeout       ""
+  Solver        "radau"
+  MaxStep       "1e-6"
+  InitStep      "-1"
+  FixedStep     "1e-3"
+  Refine        "1"
+  ZCStepSize    "1e-9"
+  RelTol        "1e-3"
+  AbsTol        "-1"
+  TurnOnThreshold "1"
+  SyncFixedStepTasks "2"
+  UseSingleCommonBaseRate "2"
+  LossVariableLimitExceededMsg "3"
+  NegativeSwitchLossMsg "3"
+  DivisionByZeroMsg "2"
+  StiffnessDetectionMsg "2"
+  MaxConsecutiveZCs "1000"
+  AlgebraicLoopWithStateMachineMsg "2"
+  AssertionAction "1"
+  InitializationCommands "Vin=24;\nVref_v=15;\nLo=220e-6;\nCo=220e-6;\nRo=10;\nResr=0.3;\nfsw=100e3;\nron=1e-3;\nVf_d=0;\nRon_d=1e-3;\nKp=0.01;\nKi=25;\nTc=1e-5;"
+  InitialState  "1"
+  SystemState   ""
+  TaskingMode   "1"
+  TaskConfigurations ""
+  CodeGenParameterInlining "2"
+  CodeGenFloatingPointFormat "2"
+  CodeGenAbsTimeUsageMsg "3"
+  CodeGenBaseName ""
+  CodeGenOutputDir ""
+  CodeGenExtraOpts ""
+  CodeGenTarget "Generic"
+  CodeGenTargetSettings ""
+  ExtendedMatrixPrecision "2"
+  MatrixSignificanceCheck "2"
+  EnableStateSpaceSplitting "2"
+  DisplayStateSpaceSplitting "1"
+  DiscretizationMethod "2"
+  ExternalModeSettings ""
+  AlgebraicLoopMethod "1"
+  AlgebraicLoopTolerance "1e-6"
+  ScriptsDialogGeometry ""
+  ScriptsDialogSplitterPos "0"
+  Terminal {
+    Type          Output
+    Index         "1"
+  }
+  Schematic {
+    Location      [915, 288; 1725, 613]
+    ZoomFactor    1
+    SliderPosition [0, 0]
+    ShowBrowser   off
+    BrowserWidth  100
+    Component {
+      Type          DCVoltageSource
+      Name          "VDCin"
+      Show          on
+      Position      [60, 140]
+      Direction     down
+      Flipped       on
+      LabelPosition south
+      Parameter {
+        Variable      "V"
+        Value         "Vin"
+        Show          off
+      }
+    }
+    Component {
+      Type          Mosfet
+      Name          "FET1"
+      Show          on
+      Position      [340, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Ron"
+        Value         "ron"
+        Show          off
+      }
+    }
+    Component {
+      Type          Diode
+      Name          "D1"
+      Show          on
+      Position      [410, 140]
+      Direction     up
+      Flipped       on
+      LabelPosition south
+      Parameter {
+        Variable      "Vf"
+        Value         "Vf_d"
+        Show          off
+      }
+      Parameter {
+        Variable      "Ron"
+        Value         "Ron_d"
+        Show          off
+      }
+    }
+    Component {
+      Type          Inductor
+      Name          "L1"
+      Show          on
+      Position      [480, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "L"
+        Value         "Lo"
+        Show          off
+      }
+    }
+    Component {
+      Type          Resistor
+      Name          "Resr"
+      Show          on
+      Position      [690, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "R"
+        Value         "Resr"
+        Show          off
+      }
+    }
+    Component {
+      Type          Capacitor
+      Name          "C1"
+      Show          on
+      Position      [760, 140]
+      Direction     down
+      Flipped       on
+      LabelPosition south
+      Parameter {
+        Variable      "C"
+        Value         "Co"
+        Show          off
+      }
+    }
+    Component {
+      Type          Resistor
+      Name          "R1"
+      Show          on
+      Position      [550, 140]
+      Direction     down
+      Flipped       on
+      LabelPosition south
+      Parameter {
+        Variable      "R"
+        Value         "Ro"
+        Show          off
+      }
+    }
+    Component {
+      Type          Voltmeter
+      Name          "Vm1"
+      Show          on
+      Position      [620, 140]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+    }
+    Component {
+      Type          CScript
+      Name          "Ctrl"
+      Show          on
+      Position      [130, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "NumInputs"
+        Value         "1"
+        Show          off
+      }
+      Parameter {
+        Variable      "NumOutputs"
+        Value         "1"
+        Show          off
+      }
+      Parameter {
+        Variable      "NumContStates"
+        Value         "0"
+        Show          off
+      }
+      Parameter {
+        Variable      "NumDiscStates"
+        Value         "1"
+        Show          off
+      }
+      Parameter {
+        Variable      "NumZCSignals"
+        Value         "0"
+        Show          off
+      }
+      Parameter {
+        Variable      "DirectFeedthrough"
+        Value         "1"
+        Show          off
+      }
+      Parameter {
+        Variable      "Ts"
+        Value         "Tc"
+        Show          off
+      }
+      Parameter {
+        Variable      "Parameters"
+        Value         "Vref_v Kp Ki Tc"
+        Show          off
+      }
+      Parameter {
+        Variable      "Declarations"
+        Value         ""
+        Show          off
+      }
+      Parameter {
+        Variable      "StartFcn"
+        Value         ""
+        Show          off
+      }
+      Parameter {
+        Variable      "OutputFcn"
+        Value         "double Vref=ParamRealData(0,0), Kp=ParamRealData(1,0);
+double err=Vref-Input(0);
+double duty=Kp*err+DiscState(0);
+if(duty>0.95) duty=0.95; if(duty<0.02) duty=0.02;
+Output(0)=duty;"
+        Show          off
+      }
+      Parameter {
+        Variable      "UpdateFcn"
+        Value         "double Vref=ParamRealData(0,0), Ki=ParamRealData(2,0), Tc=ParamRealData(3,0);
+double err=Vref-Input(0);
+double integ=DiscState(0)+Ki*Tc*err;
+if(integ>0.95) integ=0.95; if(integ<0.0) integ=0.0;
+DiscState(0)=integ;"
+        Show          off
+      }
+      Parameter {
+        Variable      "DerivativeFcn"
+        Value         ""
+        Show          off
+      }
+      Parameter {
+        Variable      "TerminateFcn"
+        Value         ""
+        Show          off
+      }
+    }
+    Component {
+      Type          TriangleGenerator
+      Name          "Carrier"
+      Show          on
+      Position      [200, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Min"
+        Value         "0"
+        Show          off
+      }
+      Parameter {
+        Variable      "Max"
+        Value         "1"
+        Show          off
+      }
+      Parameter {
+        Variable      "f"
+        Value         "fsw"
+        Show          off
+      }
+    }
+    Component {
+      Type          RelationalOperator
+      Name          "Cmp"
+      Show          on
+      Position      [270, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Operator"
+        Value         "6"
+        Show          off
+      }
+    }
+    Component {
+      Type          PlecsProbe
+      Name          "Out1_prb"
+      Show          on
+      Position      [1095, 100]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Probe {
+        Component     "R1"
+        Path          ""
+        Signals       {"Resistor voltage"}
+      }
+    }
+    Component {
+      Type          Output
+      Name          "Out1"
+      Show          on
+      Position      [1155, 100]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Index"
+        Value         "1"
+        Show          on
+      }
+      Parameter {
+        Variable      "Width"
+        Value         "-1"
+        Show          off
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "VDCin"
+      SrcTerminal   1
+      Points        [60, 95]
+      Branch {
+        Points        [315, 95]
+        DstComponent  "FET1"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "FET1"
+      SrcTerminal   2
+      Points        [365, 95]
+      Branch {
+        Points        [410, 95]
+        DstComponent  "D1"
+        DstTerminal   2
+      }
+      Branch {
+        Points        [455, 95]
+        DstComponent  "L1"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "L1"
+      SrcTerminal   2
+      Points        [505, 95]
+      Branch {
+        Points        [550, 95]
+        DstComponent  "R1"
+        DstTerminal   1
+      }
+      Branch {
+        Points        [620, 95]
+        DstComponent  "Vm1"
+        DstTerminal   1
+      }
+      Branch {
+        Points        [665, 95]
+        DstComponent  "Resr"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "Resr"
+      SrcTerminal   2
+      Points        [715, 95]
+      Branch {
+        Points        [760, 95]
+        DstComponent  "C1"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "VDCin"
+      SrcTerminal   2
+      Points        [60, 185]
+      Branch {
+        Points        [410, 185]
+        DstComponent  "D1"
+        DstTerminal   1
+      }
+      Branch {
+        Points        [550, 185]
+        DstComponent  "R1"
+        DstTerminal   2
+      }
+      Branch {
+        Points        [620, 185]
+        DstComponent  "Vm1"
+        DstTerminal   2
+      }
+      Branch {
+        Points        [760, 185]
+        DstComponent  "C1"
+        DstTerminal   2
+      }
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Vm1"
+      SrcTerminal   3
+      DstComponent  "Ctrl"
+      DstTerminal   1
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Ctrl"
+      SrcTerminal   2
+      DstComponent  "Cmp"
+      DstTerminal   1
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Carrier"
+      SrcTerminal   1
+      DstComponent  "Cmp"
+      DstTerminal   2
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Cmp"
+      SrcTerminal   3
+      DstComponent  "FET1"
+      DstTerminal   3
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Out1_prb"
+      SrcTerminal   1
+      DstComponent  "Out1"
+      DstTerminal   1
+    }
+  }
+}

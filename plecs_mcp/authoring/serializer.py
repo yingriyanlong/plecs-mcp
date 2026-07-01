@@ -176,7 +176,7 @@ def serialize(spec: CircuitSpec) -> str:
     L += _SOLVER
     L += [f'  InitializationCommands "{_esc(spec.init)}"']
     L += _TAIL
-    if spec.outputs:
+    if spec.outputs or any(c.type == "Output" for c in spec.components):
         L += ["  Terminal {", "    Type          Output", '    Index         "1"', "  }"]
     L += [
         "  Schematic {",

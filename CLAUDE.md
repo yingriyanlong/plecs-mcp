@@ -52,3 +52,4 @@ M6 hardening + evaluations.
 | 2026-06-30 | M4: plecs_scan_parameter (server-side sweep) + plecs_run_analysis (plecs.analyze -> bode/PM) | Sweeps and AC/steady-state analyses are core PLECS workflows; bode+PM from impulse-response analysis verified on the analysis-tools demo. |
 | 2026-06-30 | M5: domain-classify LIBRARY (thermal/magnetic discoverable); document thermal signal names | simulate/analyze are domain-agnostic (thermal demo runs); authoring thermal/magnetic from scratch deferred (needs loss tables/permeance nets). |
 | 2026-06-30 | M6: eval suite + docs + v0.5.0; stdio smoke (16 tools) | mcp-builder Phase-4 capstone; production server verified launching with full tool surface. |
+| 2026-07-01 | C-Script control blocks authorable (CScript in KB; variable-port; code as string params) | Realistic digital control; verified C-Script PI regulates buck (Vo=15.00). Macros: Input/Output/DiscState/ParamRealData. See docs/cscript-notes.md. |
