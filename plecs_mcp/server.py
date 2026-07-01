@@ -166,6 +166,30 @@ def plecs_plot_waveform(handle: str, signals: Optional[list] = None,
 
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
+def plecs_simulate_batch(param_sets: list, model_name: Optional[str] = None,
+                         signal: int = 0, metrics: Optional[list] = None) -> dict:
+    """Run several simulations in one call, one per ModelVars set in `param_sets`
+    (e.g. [{"D": 0.3}, {"D": 0.5}]). Returns per-run metrics for `signal`
+    (default steady_state + ripple_pp). One round-trip instead of many; per-run
+    errors are captured, not fatal."""
+    name = model_name or _STATE["current_model"]
+    if not name:
+        return {"ok": False, "error": "no model loaded; call plecs_load_model first"}
+    names = metrics or ["steady_state", "ripple_pp"]
+    runs = []
+    for mv in param_sets:
+        try:
+            r = client.simulate(name, {"ModelVars": mv} if mv else None)
+        except Exception as e:
+            runs.append({"vars": mv, "error": str(e)[:120]})
+            continue
+        time, values = to_signals(r.get("Time") or [], r.get("Values") or [])
+        m = _metrics(time, values[signal], names=names) if values else {}
+        runs.append({"vars": mv, "metrics": m})
+    return {"ok": True, "model": name, "signal": signal, "n": len(param_sets), "runs": runs}
+
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
 def plecs_scan_parameter(param: str, start: float, end: float, points: int,
                          model_name: Optional[str] = None, signal: int = 0,
                          metric: str = "steady_state", minimize: bool = False,
