@@ -9,6 +9,7 @@ Run via the ``plecs-mcp`` console script or ``python -m plecs_mcp.server``.
 from __future__ import annotations
 
 import os
+import re
 from typing import Optional
 
 from mcp.server.fastmcp import FastMCP
@@ -224,6 +225,57 @@ def plecs_run_analysis(analysis_name: str, model_name: Optional[str] = None) -> 
     return {"ok": True, "type": "operating_point", "analysis": analysis_name,
             "keys": list(r.keys()) if isinstance(r, dict) else None,
             "note": "non-frequency analysis (e.g. steady-state sets the operating point; no series returned)"}
+
+
+@mcp.tool()
+def plecs_search_docs(query: str, top_k: int = 5) -> dict:
+    """Search the offline PLECS manual (your installed version) and return the
+    best-matching topics (title + summary + page name). Use plecs_get_doc to read
+    a page. If the index isn't built, run:
+    python -m plecs_mcp.docs.extract <plecshelp.qch> .docs_cache"""
+    from .docs.search import get_index
+    idx = get_index()
+    if idx is None:
+        return {"ok": False, "error": "docs index not built; run "
+                "'python -m plecs_mcp.docs.extract <PLECS>/onlinehelp/plecshelp.qch .docs_cache'"}
+    return {"ok": True, "query": query, "results": idx.search(query, top_k)}
+
+
+@mcp.tool()
+def plecs_get_doc(name: str) -> dict:
+    """Return the text of a PLECS manual page by name (from plecs_search_docs)."""
+    from .docs.search import get_index
+    idx = get_index()
+    if idx is None:
+        return {"ok": False, "error": "docs index not built"}
+    d = idx.get(name)
+    if not d:
+        return {"ok": False, "error": f"no doc '{name}'; use plecs_search_docs"}
+    text = d["text"]
+    return {"ok": True, "name": d["name"], "title": d["title"],
+            "text": text[:6000], "truncated": len(text) > 6000}
+
+
+@mcp.tool()
+def plecs_doc_for_component(type_name: str) -> dict:
+    """Return the manual page for a component type (e.g. Mosfet, Diode,
+    TransferFunction), so parameters/terminals come from the real docs."""
+    from .docs.search import get_index
+    idx = get_index()
+    if idx is None:
+        return {"ok": False, "error": "docs index not built"}
+    key = type_name.lower()
+    spaced = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", type_name).replace("_", " ").lower()
+    exact = next((x for x in idx.index if x["name"].lower() == key
+                  or x["title"].lower() in (key, spaced)), None)
+    if exact is None:
+        res = idx.search(spaced, top_k=1)
+        exact = idx.by_name.get(res[0]["name"]) if res else None
+    if exact is None:
+        return {"ok": False, "error": f"no doc for '{type_name}'"}
+    d = idx.get(exact["name"])
+    return {"ok": True, "type": type_name, "name": d["name"], "title": d["title"],
+            "text": d["text"][:6000]}
 
 
 from .authoring.tools import register_authoring_tools

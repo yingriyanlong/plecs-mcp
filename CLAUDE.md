@@ -53,3 +53,4 @@ M6 hardening + evaluations.
 | 2026-06-30 | M5: domain-classify LIBRARY (thermal/magnetic discoverable); document thermal signal names | simulate/analyze are domain-agnostic (thermal demo runs); authoring thermal/magnetic from scratch deferred (needs loss tables/permeance nets). |
 | 2026-06-30 | M6: eval suite + docs + v0.5.0; stdio smoke (16 tools) | mcp-builder Phase-4 capstone; production server verified launching with full tool surface. |
 | 2026-07-01 | C-Script control blocks authorable (CScript in KB; variable-port; code as string params) | Realistic digital control; verified C-Script PI regulates buck (Vo=15.00). Macros: Input/Output/DiscState/ParamRealData. See docs/cscript-notes.md. |
+| 2026-07-01 | Docs KB from local plecshelp.qch (version-correct 4.9.5), TF-IDF search, corpus gitignored | Online docs are 5.0; the .qch matches the install. Copyright -> extract locally, commit only code. Tools: plecs_search_docs/get_doc/doc_for_component. |

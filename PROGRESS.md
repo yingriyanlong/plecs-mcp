@@ -177,3 +177,20 @@ returned 0 signals (that demo routes junction temp to a Scope, not an RPC outpor
 so reading a thermal quantity back end-to-end is NOT yet verified. The tools are
 domain-agnostic in principle; a model that exposes Tj as an outport is needed to
 confirm the readout.
+
+## Documentation KB (2026-07-01)
+- Source: the LOCAL 4.9.5 manual `onlinehelp/plecshelp.qch` (Qt Help = SQLite),
+  so it matches the installed version (online docs are 5.0). Extracted 408 doc
+  pages (HTML -> text) via plecs_mcp/docs/extract.py.
+- Corpus + index are Plexim copyright -> built locally, gitignored (.docs_cache/);
+  only the extractor/search code is committed. (Same choice the reference RAG mcp
+  made with its PDF; zotero-mcp likewise indexes the user's own library locally.)
+- search.py: stdlib TF-IDF (no heavy deps). Tools: plecs_search_docs,
+  plecs_get_doc, plecs_doc_for_component (camelCase-aware exact match).
+- Verified: "steady state analysis"->Analysis Tools/AC Sweep; "c-script..."->
+  C-Scripts; "thermal junction temp"->Thermal Modeling/Heat Sink; component->doc
+  resolves Diode/MOSFET/Inductor/Transfer Function/IGBT/Triangular Wave/Relational.
+- Build once: python -m plecs_mcp.docs.extract <plecshelp.qch> .docs_cache
+
+Note: an optional semantic layer (sentence-transformers embeddings, like the RAG
+mcp) could improve recall; the stdlib keyword index is the dependency-free default.

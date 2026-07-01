@@ -21,3 +21,6 @@ cache/
 Thumbs.db
 .idea/
 .vscode/
+
+# extracted PLECS manual (Plexim copyright) - built locally, never committed
+.docs_cache/

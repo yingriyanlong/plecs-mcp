@@ -66,6 +66,16 @@ templates), `PLECS_MCP_MODEL_DIR` / `PLECS_MCP_PLOT_DIR` (output dirs).
 - `plecs_run_analysis` — run a named PLECS Analysis (steady-state / AC) →
   bode summary (DC gain, gain-crossover, phase margin) + handle.
 
+**Documentation KB (your installed version)**
+- `plecs_search_docs` / `plecs_get_doc` — search and read the offline PLECS manual.
+- `plecs_doc_for_component` — the manual page for a component type.
+
+Build the local index once (corpus is Plexim copyright, kept out of git):
+```bash
+python -m plecs_mcp.docs.extract "C:\path\to\PLECS\onlinehelp\plecshelp.qch" .docs_cache
+```
+Override its location with `PLECS_MCP_DOCS_DIR`.
+
 ## Authoring example (auto-layout)
 
 ```python
