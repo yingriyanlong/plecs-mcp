@@ -1,8 +1,8 @@
 {
-  "demos_root_example": "<PLECS>\\demos",
   "plecs_version": "4.9.5",
   "n_demos": 89,
   "n_types": 91,
   "generated": "2026-06-30",
-  "note": "Paths are relative to a PLECS demos dir; set PLECS_DEMOS_DIR to your install."
+  "note": "Paths are relative to a PLECS demos dir; set PLECS_DEMOS_DIR to your install.",
+  "demos_root_hint": "set PLECS_DEMOS_DIR to your PLECS 'demos' folder"
 }

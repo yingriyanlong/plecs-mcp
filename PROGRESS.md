@@ -24,8 +24,8 @@ magnetic, plus simulation scripts and analyses.
 - [ ] M2: Spec -> .plecs serializer + component KB (electrical) + build/validate.
 
 ## Environment notes
-- PLECS 4.7, Windows, RPC port 1080. gh CLI authed as `yingriyanlong`
-  (call by full path `<git-cli>\gh.exe` until app PATH refresh).
+- PLECS on Windows, RPC port 1080. (If `gh` isn't on PATH after install, call it
+  by its full install path until the app's PATH refreshes.)
 
 ## M1 done (2026-06-30)
 Run/observe tools implemented and verified on live PLECS 4.7:

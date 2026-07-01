@@ -57,7 +57,7 @@ What gets installed:
 Extracts your **installed** PLECS manual (version-correct) into a local, gitignored
 search index used by `plecs_search_docs` / `plecs_doc_for_component`:
 ```powershell
-.\.venv\Scripts\python.exe -m plecs_mcp.docs.extract "<PLECS>\onlinehelp\plecshelp.qch" .docs_cache
+.\.venv\Scripts\python.exe -m plecs_mcp.docs.extract "C:\path\to\PLECS\onlinehelp\plecshelp.qch" .docs_cache
 ```
 Adjust the path to your PLECS install. Skip this if you don't need doc search.
 
