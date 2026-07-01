@@ -6,7 +6,7 @@ DstComponent/DstTerminal); ``Points`` are omitted (PLECS routes wires itself).
 """
 from __future__ import annotations
 
-from .spec import CircuitSpec
+from .spec import CircuitSpec, Component, Connection
 
 _HEADER = [
     "  Version       \"4.7\"",
@@ -93,6 +93,45 @@ def _component(c, x: int, y: int) -> list[str]:
     out += _params(c.params)
     out.append("    }")
     return out
+
+
+
+def _subsystem(c, x: int, y: int) -> list[str]:
+    sch = c.schematic or {}
+    inner = [d if isinstance(d, Component) else Component(**d) for d in sch.get("components", [])]
+    conns = [d if isinstance(d, Connection) else Connection(**d) for d in sch.get("connections", [])]
+    L = [
+        "    Component {", "      Type          Subsystem",
+        f'      Name          "{c.name}"', "      Show          on",
+        f"      Position      [{x}, {y}]", f"      Direction     {c.direction}",
+        f"      Flipped       {'on' if c.flipped else 'off'}", "      LabelPosition south",
+        "      Frame         [-20, -10; 20, 10]", '      SampleTime    "-1"',
+        '      CodeGenDiscretizationMethod "2"', '      CodeGenTarget "Generic"',
+        "      MaskIconFrame on", "      MaskIconOpaque off", "      MaskIconRotates on",
+    ]
+    ports = sorted((int(p.params.get("Index", "1")), p.type) for p in inner
+                   if p.type in ("Input", "Output"))
+    for _idx, ptype in ports:
+        if ptype == "Input":
+            L += ["      Terminal {", "        Type          Input",
+                  "        Position      [-20, 0]", "        Direction     left", "      }"]
+        else:
+            L += ["      Terminal {", "        Type          Output",
+                  "        Position      [20, 0]", "        Direction     right", "      }"]
+    L += ["      Schematic {", "        Location      [200, 200; 600, 420]",
+          "        ZoomFactor    1", "        SliderPosition [0, 0]",
+          "        ShowBrowser   off", "        BrowserWidth  100"]
+    body: list[str] = []
+    ix = 60
+    for ic in inner:
+        px, py = (ic.position or [ix, 100])
+        body += _component(ic, px, py)
+        ix += 70
+    for conn in conns:
+        body += _connection(conn)
+    L += ["    " + line for line in body]
+    L += ["      }", "    }"]
+    return L
 
 
 def _probe(o, x: int, y: int) -> list[str]:
@@ -189,7 +228,10 @@ def serialize(spec: CircuitSpec) -> str:
     x = 85
     for c in spec.components:
         px, py = (c.position or [x, 100])
-        L += _component(c, px, py)
+        if getattr(c, "schematic", None):
+            L += _subsystem(c, px, py)
+        else:
+            L += _component(c, px, py)
         x += 90
     for i, o in enumerate(spec.outputs):
         px, py = (o.position or [x + 80, 100 + i * 40])

@@ -17,6 +17,7 @@ class Component(BaseModel):
     position: Optional[list[int]] = None
     direction: str = "up"
     flipped: bool = False
+    schematic: Optional[dict] = None  # Type "Subsystem": {"components":[...], "connections":[...]}
 
 
 class Connection(BaseModel):

@@ -212,3 +212,14 @@ Roadmap (proposed next): full annotation pass + output schemas on all tools;
 an eval runner that executes eval/evaluation.xml on live PLECS; optional semantic
 docs layer (embeddings); plecs_simulate_batch (parallel sweeps); structured
 logging; subsystem authoring (removes the flat-only control limitation).
+
+## #7 Subsystem authoring (2026-07-01)
+The serializer can now emit PLECS `Subsystem` blocks: a component with a
+`schematic` = {components, connections} (including inner Input/Output port
+components with Index params) is rendered as a Subsystem with external Terminal
+blocks (ordered by port Index) + a nested Schematic. Removes the flat-only limit.
+- Verified on live PLECS: golden_models/agent_buck_subsystem encapsulates the
+  whole voltage controller (Vref/Sum/PI/Saturation/carrier/comparator) in one
+  "Controller" block; top level = power stage + Controller. Loads + regulates
+  Vo=15.00 V (0.25% overshoot, 7.9 ms). Added `Input` to the KB.
+- Offline test verifies the nested-subsystem structure. pytest: 28 passed.

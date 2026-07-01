@@ -43,6 +43,7 @@ CORE: dict[str, dict] = {
                            "NumDiscStates": "0", "NumZCSignals": "0", "DirectFeedthrough": "1",
                            "Ts": "0", "OutputFcn": ""}},
     "PlecsProbe": {"domain": "measurement", "terminals": {1: "out"}, "params": {}},
+    "Input": {"domain": "io", "terminals": {1: "out"}, "params": {"Index": "1", "Width": "-1"}},
     "Output": {"domain": "io", "terminals": {1: "in"}, "params": {"Index": "1", "Width": "-1"}},
 }
 
