@@ -30,3 +30,15 @@ loads and simulates through the MCP). Component discovery covers these domains:
   and the magnetic permeance network — none of which the current two-rail
   electrical layouter/serializer generates. Use `plecs_list_templates` to start
   from a demo (e.g. buck_converter_with_thermal_model, flyback_converter_with_magnetics).
+
+## Update (2026-07-01): thermal authoring + readout VERIFIED
+Thermal circuits ARE now generatable and readable end-to-end:
+- Thermal wires use connection `kind: "HeatPipe"` (not Wire/Signal).
+- Verified terminal indices/params (added to the KB CORE):
+  ConstantTemperature (1=a, 2=b; param T), ConstantTemperatureGnd (1; T),
+  ThermalResistor (1=a, 2=b; param **Rth**), ThermalGround (1),
+  HeatFlowMeter (1, 2 thermal; probe signal "Measured heat flow").
+- golden_models/agent_thermal_min: 100 C -> HeatFlowMeter -> 2 K/W -> ambient;
+  heat flow read via a probe->outport = **50.0 W = 100/2**, verified on live PLECS.
+Still future: semiconductor loss/junction-temp needs a thermal description
+(loss table); magnetic permeance-network authoring.

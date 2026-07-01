@@ -223,3 +223,13 @@ blocks (ordered by port Index) + a nested Schematic. Removes the flat-only limit
   "Controller" block; top level = power stage + Controller. Loads + regulates
   Vo=15.00 V (0.25% overshoot, 7.9 ms). Added `Input` to the KB.
 - Offline test verifies the nested-subsystem structure. pytest: 28 passed.
+
+## #8 Thermal readout end-to-end (2026-07-01) — closes the M5 gap
+Built a thermal-domain circuit (ConstantTemperatureGnd + HeatFlowMeter +
+ThermalResistor + ThermalGround) with `HeatPipe` connections and read a thermal
+quantity through the MCP: golden_models/agent_thermal_min gives heat flow =
+50.0 W (= 100 C / 2 K/W) on live PLECS. So the M5 "reading a thermal quantity
+back" gap is now CLOSED for a purpose-built model. (The remaining gap is only
+semiconductor loss data / junction-temp, which needs a thermal description.)
+Added verified thermal types (with terminal roles + param Rth) to the KB CORE.
+The docs KB proved its worth: found the `Rth` param name instead of guessing.
