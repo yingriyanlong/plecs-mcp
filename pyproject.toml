@@ -11,14 +11,13 @@ requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "yingriyanlong" }]
 dependencies = [
-    "mcp>=1.0",
-    "pydantic>=2.0",
+    "mcp>=1.0",       # MCP SDK / FastMCP stdio server
+    "pydantic>=2.0",  # typed circuit specs
+    "numpy",          # waveform metrics, bode
+    "matplotlib",     # waveform PNGs
 ]
 
 [project.optional-dependencies]
-# Simulation backend + analysis. pyplecs is installed from source for now
-# (not yet on PyPI); see docs/development-plan.md.
-sim = ["numpy", "scipy", "matplotlib"]
 dev = ["pytest", "ruff"]
 
 [project.scripts]
