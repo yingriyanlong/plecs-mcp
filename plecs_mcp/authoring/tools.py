@@ -8,6 +8,8 @@ from __future__ import annotations
 import os
 import tempfile
 
+from mcp.types import ToolAnnotations
+
 from ..rpc import client
 from . import templates
 from .kb import describe as kb_describe
@@ -73,20 +75,20 @@ def validate_model(model_path: str) -> dict:
 
 
 def register_authoring_tools(mcp) -> None:
-    @mcp.tool()
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
     def plecs_list_component_types(domain: str | None = None) -> dict:
         """List known component types (curated core + full demo-harvested library).
         Optional domain filter for core: electrical, control, measurement, io."""
         return list_types(domain)
 
-    @mcp.tool()
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
     def plecs_describe_component(type_name: str) -> dict:
         """Return terminal map/count and parameters for a component type. Core
         types include terminal ROLES (drain/source/gate); library types (from the
         PLECS demos) include terminal count + parameter names."""
         return describe_type(type_name)
 
-    @mcp.tool()
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=False))
     def plecs_build_model(spec: dict, out_dir: str | None = None, load: bool = True,
                           layout: str | None = None) -> dict:
         """Build a .plecs model from a structured spec, write it, and (by default)
@@ -100,12 +102,12 @@ def register_authoring_tools(mcp) -> None:
         automatic two-rail layout (layout='manual' to keep your coordinates)."""
         return build_model(spec, out_dir=out_dir, load=load, layout=layout)
 
-    @mcp.tool()
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
     def plecs_validate_model(model_path: str) -> dict:
         """Load a .plecs file in PLECS and report whether it loads cleanly."""
         return validate_model(model_path)
 
-    @mcp.tool()
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
     def plecs_list_templates(query: str | None = None) -> dict:
         """List reference topologies from the bundled PLECS demos (89 models) —
         the gold standard for layout. Filter by name or component type (e.g.
@@ -113,7 +115,7 @@ def register_authoring_tools(mcp) -> None:
         absolute paths, then load one with plecs_load_model."""
         return templates.list_templates(query)
 
-    @mcp.tool()
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
     def plecs_describe_template(name: str) -> dict:
         """Return a demo template's relative/absolute path and component types,
         so it can be loaded as a clean starting point or studied for layout."""

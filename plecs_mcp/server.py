@@ -29,7 +29,7 @@ mcp = FastMCP("plecs-mcp")
 _STATE: dict[str, Optional[str]] = {"current_model": None}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True, idempotentHint=True))
 def plecs_status() -> dict:
     """Check whether the local PLECS XML-RPC interface is reachable.
 
@@ -39,7 +39,7 @@ def plecs_status() -> dict:
     return client.ping(load_config())
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=False))
 def plecs_load_model(model_path: str) -> dict:
     """Load a .plecs model by absolute path. Returns the model name to use in
     subsequent simulate/set calls."""
@@ -51,7 +51,7 @@ def plecs_load_model(model_path: str) -> dict:
     return {"ok": True, "model_name": name, "path": model_path}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
 def plecs_close_model(model_name: Optional[str] = None) -> dict:
     """Close an open model (defaults to the last loaded model)."""
     name = model_name or _STATE["current_model"]
@@ -63,7 +63,7 @@ def plecs_close_model(model_name: Optional[str] = None) -> dict:
     return {"ok": True, "closed": name}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
 def plecs_set_param(component: str, parameter: str, value: float) -> dict:
     """Set a single component parameter directly (plecs.set), e.g.
     component='agent_buck/R1', parameter='R', value=10. For sweeping
@@ -73,7 +73,7 @@ def plecs_set_param(component: str, parameter: str, value: float) -> dict:
     return {"ok": True, "component": component, "parameter": parameter, "value": value}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
 def plecs_simulate(
     model_name: Optional[str] = None,
     model_vars: Optional[dict] = None,
@@ -110,7 +110,7 @@ def plecs_simulate(
     }
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
 def plecs_analyze_waveform(
     handle: str,
     signal: int = 0,
@@ -133,7 +133,7 @@ def plecs_analyze_waveform(
     return {"ok": True, "handle": handle, "signal": signal, "metrics": m}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
 def plecs_get_waveform(handle: str, signal: int = 0, max_points: int = 500) -> dict:
     """Return a downsampled (time, value) series for one signal, for plotting or
     inspection. Capped at ``max_points`` to protect context."""
@@ -149,7 +149,7 @@ def plecs_get_waveform(handle: str, signal: int = 0, max_points: int = 500) -> d
             "time": t[::step], "values": y[::step], "downsample_step": step}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=False, idempotentHint=True))
 def plecs_plot_waveform(handle: str, signals: Optional[list] = None,
                         out_path: Optional[str] = None, title: str = "PLECS waveforms") -> dict:
     """Render one or more signals of a stored result to a PNG; returns its path."""
@@ -165,7 +165,7 @@ def plecs_plot_waveform(handle: str, signals: Optional[list] = None,
     return {"ok": True, "handle": handle, "path": path, "signals": list(idxs)}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
 def plecs_scan_parameter(param: str, start: float, end: float, points: int,
                          model_name: Optional[str] = None, signal: int = 0,
                          metric: str = "steady_state", minimize: bool = False,
@@ -200,7 +200,7 @@ def plecs_scan_parameter(param: str, start: float, end: float, points: int,
             "n": points, "rows": rows, "optimum": opt}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
 def plecs_run_analysis(analysis_name: str, model_name: Optional[str] = None) -> dict:
     """Run a named PLECS Analysis defined in the model (Steady-State / AC Sweep /
     Impulse Response / Multitone). For frequency-response analyses, returns a bode
@@ -228,7 +228,7 @@ def plecs_run_analysis(analysis_name: str, model_name: Optional[str] = None) -> 
             "note": "non-frequency analysis (e.g. steady-state sets the operating point; no series returned)"}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
 def plecs_search_docs(query: str, top_k: int = 5) -> dict:
     """Search the offline PLECS manual (your installed version) and return the
     best-matching topics (title + summary + page name). Use plecs_get_doc to read
@@ -242,7 +242,7 @@ def plecs_search_docs(query: str, top_k: int = 5) -> dict:
     return {"ok": True, "query": query, "results": idx.search(query, top_k)}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
 def plecs_get_doc(name: str) -> dict:
     """Return the text of a PLECS manual page by name (from plecs_search_docs)."""
     from .docs.search import get_index
@@ -257,7 +257,7 @@ def plecs_get_doc(name: str) -> dict:
             "text": text[:6000], "truncated": len(text) > 6000}
 
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False, idempotentHint=True))
 def plecs_doc_for_component(type_name: str) -> dict:
     """Return the manual page for a component type (e.g. Mosfet, Diode,
     TransferFunction), so parameters/terminals come from the real docs."""
