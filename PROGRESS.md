@@ -241,4 +241,36 @@ The docs KB proved its worth: found the `Rth` param name instead of guessing.
   fixed a real duplicate KB key "Sum" -- the later, demo-correct entry was winning).
 - pyproject: project URLs, keywords, classifiers; README CI badge.
 - All optimization items done: #1 annotations, #3 batch, #5 logging, #6 inline
+
+## Big project A: semiconductor loss + junction temperature (2026-07-02)
+CLOSES the last M5 gap. Semiconductors can be made lossy and their junction
+temperature read, via `plecs_build_model(spec, thermal=[{name, sclass, ron,
+eon_mJ, eoff_mJ, rth, cth, v_test, i_max, rth_sink, t_amb}])`.
+
+Root cause found on live PLECS (the key unlock): losses/Tj are computed ONLY when
+the device sits INSIDE an active `HeatSink` frame. A wired thermal terminal loads
+and simulates but yields 0 loss and errors on a loss probe: *"you need to place
+the component on an active heat sink."* (Diagnosed by bisection with the demo's
+real IGBT.xml.)
+
+Implemented:
+- `authoring/lossdata.py::semiconductor_xml()` — generates a `SemiconductorLibrary`
+  loss datasheet (TurnOn/TurnOff energy tables + ConductionLoss + Cauer RC).
+- `serializer._heatsink()` — emits `HeatSink` with `Frame` + `HeatPort` (exits up
+  into the clear band above the top rail). `Component.frame` field added.
+- `authoring/thermal.py::attach_heatsink()` — encloses each device in a heat sink,
+  wires HeatPort -> HeatFlowMeter -> ThermalResistor -> ConstantTemperatureGnd,
+  sets `thermal="file:<name>"`, adds Tj + dissipated-power probes.
+- `build_model(thermal=[...])` writes the loss XMLs into `<model>_plecs/`.
+- Fixed a serializer bug: only one top-level Output `Terminal` was ever emitted,
+  so multi-output models returned a single signal. Now one Terminal per index.
+
+Verified on live PLECS 4.9.5 (buck 48->24 V, 100 kHz, generated MOSFET datasheet):
+**Tj 25.0 -> 32.4 C, total dissipation ~4.9 W** over 20 ms. Probe signal names are
+device-type-specific & case-sensitive (`"MOSFET junction temp"` etc.; a wrong
+string silently returns 0). Offline suite 36 passed, ruff clean. See
+docs/thermal-magnetic-notes.md.
+
+Remaining big projects: B magnetic permeance-network authoring; C control-diagram
+auto-layout (thermal networks currently use a fixed clear-band placement).
   metrics, #7 subsystems, #8 thermal readout, #9 CI (2 & 4 skipped per request).

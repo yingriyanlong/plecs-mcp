@@ -15,6 +15,7 @@ copied from any sample.
 | `agent_buck_cscript.plecs` | Buck with a **C-Script** digital PI controller (Vref=15) | Vo → Vref | ✅ 15.00 V, 0.25% overshoot, 7.9 ms; tracks Vref=10→10.00 V |
 | `agent_buck_subsystem.plecs` | Buck with the whole controller in a **Subsystem** block (Vref=15) | Vo → Vref; clean top level | ✅ 15.00 V, 0.25% overshoot, 7.9 ms |
 | `agent_thermal_min.plecs` | Minimal **thermal** circuit (100 C, 2 K/W) | heat flow = ΔT/Rth = 50 W | ✅ 50.0 W read end-to-end |
+| `agent_buck_thermal.plecs` | Buck with a **lossy MOSFET on a heat sink** (generated loss datasheet in `agent_buck_thermal_plecs/`) | junction heats up; loss dissipates to ambient | ✅ Tj 25→32.9 °C, ~4.9 W (live 4.9.5) |
 
 Regenerate any of these with `plecs_build_model` (see
 `docs/development-plan.md` and the M2 entry in `PROGRESS.md`).

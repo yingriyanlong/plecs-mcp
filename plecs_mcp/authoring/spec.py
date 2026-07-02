@@ -18,6 +18,8 @@ class Component(BaseModel):
     direction: str = "up"
     flipped: bool = False
     schematic: Optional[dict] = None  # Type "Subsystem": {"components":[...], "connections":[...]}
+    frame: Optional[list[int]] = None  # Type "HeatSink": [x0,y0,x1,y1] rectangle (relative to Position)
+                                       # enclosing the semiconductor(s) that dissipate into this sink
 
 
 class Connection(BaseModel):

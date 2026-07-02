@@ -46,6 +46,8 @@ CORE: dict[str, dict] = {
     "ThermalResistor": {"domain": "thermal", "terminals": {1: "a", 2: "b"}, "params": {"Rth": "1"}},
     "ThermalGround": {"domain": "thermal", "terminals": {1: "thermal"}, "params": {}},
     "HeatFlowMeter": {"domain": "thermal", "terminals": {1: "b", 2: "a"}, "params": {}},
+    "HeatSink": {"domain": "thermal", "terminals": {1: "HeatPort"},
+                 "params": {"Cth": "0", "T_init": "", "Width": "1"}},
     "PlecsProbe": {"domain": "measurement", "terminals": {1: "out"}, "params": {}},
     "Input": {"domain": "io", "terminals": {1: "out"}, "params": {"Index": "1", "Width": "-1"}},
     "Output": {"domain": "io", "terminals": {1: "in"}, "params": {"Index": "1", "Width": "-1"}},

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SemiconductorLibrary xmlns="http://www.plexim.com/xml/semiconductors/" version="1.1">
+    <Package class="MOSFET" vendor="plecs-mcp" partnumber="Generic">
+        <Variables/>
+        <SemiconductorData type="MOSFET">
+            <TurnOnLoss>
+                <ComputationMethod>Table only</ComputationMethod>
+                <CurrentAxis>0 2.5 5 7.5 10</CurrentAxis>
+                <VoltageAxis>0 48</VoltageAxis>
+                <TemperatureAxis>25 125</TemperatureAxis>
+                <Energy scale="0.001">
+                    <Temperature>
+                        <Voltage>0 0 0 0 0</Voltage>
+                        <Voltage>0 0.05 0.1 0.15 0.2</Voltage>
+                    </Temperature>
+                    <Temperature>
+                        <Voltage>0 0 0 0 0</Voltage>
+                        <Voltage>0 0.06 0.12 0.18 0.24</Voltage>
+                    </Temperature>
+                </Energy>
+            </TurnOnLoss>
+            <TurnOffLoss>
+                <ComputationMethod>Table only</ComputationMethod>
+                <CurrentAxis>0 2.5 5 7.5 10</CurrentAxis>
+                <VoltageAxis>0 48</VoltageAxis>
+                <TemperatureAxis>25 125</TemperatureAxis>
+                <Energy scale="0.001">
+                    <Temperature>
+                        <Voltage>0 0 0 0 0</Voltage>
+                        <Voltage>0 0.05 0.1 0.15 0.2</Voltage>
+                    </Temperature>
+                    <Temperature>
+                        <Voltage>0 0 0 0 0</Voltage>
+                        <Voltage>0 0.06 0.12 0.18 0.24</Voltage>
+                    </Temperature>
+                </Energy>
+            </TurnOffLoss>
+            <ConductionLoss>
+                <ComputationMethod>Table only</ComputationMethod>
+                <CurrentAxis>0 2.5 5 7.5 10</CurrentAxis>
+                <TemperatureAxis>25 125</TemperatureAxis>
+                <VoltageDrop scale="1">
+                    <Temperature>0 0.125 0.25 0.375 0.5</Temperature>
+                    <Temperature>0 0.15 0.3 0.45 0.6</Temperature>
+                </VoltageDrop>
+            </ConductionLoss>
+        </SemiconductorData>
+        <ThermalModel>
+            <Branch type="Cauer">
+                <RCElement R="0.5" C="0.02"/>
+            </Branch>
+        </ThermalModel>
+        <Comment><Line></Line></Comment>
+    </Package>
+</SemiconductorLibrary>

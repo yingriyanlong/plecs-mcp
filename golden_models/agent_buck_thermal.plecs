@@ -1,0 +1,427 @@
+Plecs {
+  Name          "agent_buck_thermal"
+  Version       "4.7"
+  CircuitModel  "ContStateSpace"
+  StartTime     "0.0"
+  TimeSpan      "20e-3"
+  Timeout       ""
+  Solver        "radau"
+  MaxStep       "1e-6"
+  InitStep      "-1"
+  FixedStep     "1e-3"
+  Refine        "1"
+  ZCStepSize    "1e-9"
+  RelTol        "1e-3"
+  AbsTol        "-1"
+  TurnOnThreshold "1"
+  SyncFixedStepTasks "2"
+  UseSingleCommonBaseRate "2"
+  LossVariableLimitExceededMsg "3"
+  NegativeSwitchLossMsg "3"
+  DivisionByZeroMsg "2"
+  StiffnessDetectionMsg "2"
+  MaxConsecutiveZCs "1000"
+  AlgebraicLoopWithStateMachineMsg "2"
+  AssertionAction "1"
+  InitializationCommands "Vin=48;\nD=0.5;\nLo=200e-6;\nCo=200e-6;\nRo=10;\nfsw=100e3;\nron=0.05;"
+  InitialState  "1"
+  SystemState   ""
+  TaskingMode   "1"
+  TaskConfigurations ""
+  CodeGenParameterInlining "2"
+  CodeGenFloatingPointFormat "2"
+  CodeGenAbsTimeUsageMsg "3"
+  CodeGenBaseName ""
+  CodeGenOutputDir ""
+  CodeGenExtraOpts ""
+  CodeGenTarget "Generic"
+  CodeGenTargetSettings ""
+  ExtendedMatrixPrecision "2"
+  MatrixSignificanceCheck "2"
+  EnableStateSpaceSplitting "2"
+  DisplayStateSpaceSplitting "1"
+  DiscretizationMethod "2"
+  ExternalModeSettings ""
+  AlgebraicLoopMethod "1"
+  AlgebraicLoopTolerance "1e-6"
+  ScriptsDialogGeometry ""
+  ScriptsDialogSplitterPos "0"
+  Terminal {
+    Type          Output
+    Index         "1"
+  }
+  Terminal {
+    Type          Output
+    Index         "2"
+  }
+  Schematic {
+    Location      [915, 288; 1725, 613]
+    ZoomFactor    1
+    SliderPosition [0, 0]
+    ShowBrowser   off
+    BrowserWidth  100
+    Component {
+      Type          DCVoltageSource
+      Name          "VDCin"
+      Show          on
+      Position      [60, 140]
+      Direction     down
+      Flipped       on
+      LabelPosition south
+      Parameter {
+        Variable      "V"
+        Value         "Vin"
+        Show          off
+      }
+    }
+    Component {
+      Type          Mosfet
+      Name          "Q1"
+      Show          on
+      Position      [130, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Ron"
+        Value         "ron"
+        Show          off
+      }
+      Parameter {
+        Variable      "thermal"
+        Value         "file:Q1"
+        Show          off
+      }
+      Parameter {
+        Variable      "Rth"
+        Value         "0"
+        Show          off
+      }
+      Parameter {
+        Variable      "T_init"
+        Value         "25.0"
+        Show          off
+      }
+    }
+    Component {
+      Type          Diode
+      Name          "D1"
+      Show          on
+      Position      [200, 140]
+      Direction     up
+      Flipped       on
+      LabelPosition south
+      Parameter {
+        Variable      "Vf"
+        Value         "0"
+        Show          off
+      }
+      Parameter {
+        Variable      "Ron"
+        Value         "1e-3"
+        Show          off
+      }
+    }
+    Component {
+      Type          Inductor
+      Name          "L1"
+      Show          on
+      Position      [270, 95]
+      Direction     left
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "L"
+        Value         "Lo"
+        Show          off
+      }
+    }
+    Component {
+      Type          Capacitor
+      Name          "C1"
+      Show          on
+      Position      [340, 140]
+      Direction     down
+      Flipped       on
+      LabelPosition south
+      Parameter {
+        Variable      "C"
+        Value         "Co"
+        Show          off
+      }
+    }
+    Component {
+      Type          Resistor
+      Name          "R1"
+      Show          on
+      Position      [410, 140]
+      Direction     down
+      Flipped       on
+      LabelPosition south
+      Parameter {
+        Variable      "R"
+        Value         "Ro"
+        Show          off
+      }
+    }
+    Component {
+      Type          PulseGenerator
+      Name          "PWM"
+      Show          on
+      Position      [100, 210]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "f"
+        Value         "fsw"
+        Show          off
+      }
+      Parameter {
+        Variable      "DutyCycle"
+        Value         "D"
+        Show          off
+      }
+    }
+    Component {
+      Type          HeatSink
+      Name          "HS_Q1"
+      Show          on
+      Position      [130, 95]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Frame         [-22, -26; 22, 26]
+      Parameter {
+        Variable      "Cth"
+        Value         "0"
+        Show          off
+      }
+      Parameter {
+        Variable      "T_init"
+        Value         ""
+        Show          off
+      }
+      Parameter {
+        Variable      "Width"
+        Value         "1"
+        Show          off
+      }
+      Terminal {
+        Type          HeatPort
+        Position      [0, -46]
+        Direction     up
+      }
+    }
+    Component {
+      Type          HeatFlowMeter
+      Name          "Wm_Q1"
+      Show          on
+      Position      [550, 25]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+    }
+    Component {
+      Type          ThermalResistor
+      Name          "Rth_Q1"
+      Show          on
+      Position      [650, 25]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Rth"
+        Value         "1.0"
+        Show          off
+      }
+    }
+    Component {
+      Type          ConstantTemperatureGnd
+      Name          "Tamb_Q1"
+      Show          on
+      Position      [750, 25]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "T"
+        Value         "25.0"
+        Show          off
+      }
+    }
+    Component {
+      Type          PlecsProbe
+      Name          "Tj_Q1_prb"
+      Show          on
+      Position      [490, -20]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Probe {
+        Component     "Q1"
+        Path          ""
+        Signals       {"MOSFET junction temp"}
+      }
+    }
+    Component {
+      Type          Output
+      Name          "Tj_Q1"
+      Show          on
+      Position      [550, -20]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Index"
+        Value         "1"
+        Show          on
+      }
+      Parameter {
+        Variable      "Width"
+        Value         "-1"
+        Show          off
+      }
+    }
+    Component {
+      Type          PlecsProbe
+      Name          "Ploss_Q1_prb"
+      Show          on
+      Position      [590, -20]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Probe {
+        Component     "Wm_Q1"
+        Path          ""
+        Signals       {"Measured heat flow"}
+      }
+    }
+    Component {
+      Type          Output
+      Name          "Ploss_Q1"
+      Show          on
+      Position      [650, -20]
+      Direction     right
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Index"
+        Value         "2"
+        Show          on
+      }
+      Parameter {
+        Variable      "Width"
+        Value         "-1"
+        Show          off
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "VDCin"
+      SrcTerminal   1
+      Points        [60, 95]
+      Branch {
+        Points        [105, 95]
+        DstComponent  "Q1"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "Q1"
+      SrcTerminal   2
+      Points        [155, 95]
+      Branch {
+        Points        [200, 95]
+        DstComponent  "D1"
+        DstTerminal   2
+      }
+      Branch {
+        Points        [245, 95]
+        DstComponent  "L1"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "L1"
+      SrcTerminal   2
+      Points        [295, 95]
+      Branch {
+        Points        [340, 95]
+        DstComponent  "C1"
+        DstTerminal   1
+      }
+      Branch {
+        Points        [410, 95]
+        DstComponent  "R1"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "VDCin"
+      SrcTerminal   2
+      Points        [60, 185]
+      Branch {
+        Points        [200, 185]
+        DstComponent  "D1"
+        DstTerminal   1
+      }
+      Branch {
+        Points        [340, 185]
+        DstComponent  "C1"
+        DstTerminal   2
+      }
+      Branch {
+        Points        [410, 185]
+        DstComponent  "R1"
+        DstTerminal   2
+      }
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "PWM"
+      SrcTerminal   1
+      DstComponent  "Q1"
+      DstTerminal   3
+    }
+    Connection {
+      Type          HeatPipe
+      SrcComponent  "HS_Q1"
+      SrcTerminal   1
+      Points        [130, 25; 525, 25]
+      DstComponent  "Wm_Q1"
+      DstTerminal   2
+    }
+    Connection {
+      Type          HeatPipe
+      SrcComponent  "Wm_Q1"
+      SrcTerminal   1
+      DstComponent  "Rth_Q1"
+      DstTerminal   1
+    }
+    Connection {
+      Type          HeatPipe
+      SrcComponent  "Rth_Q1"
+      SrcTerminal   2
+      DstComponent  "Tamb_Q1"
+      DstTerminal   1
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Tj_Q1_prb"
+      SrcTerminal   1
+      DstComponent  "Tj_Q1"
+      DstTerminal   1
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Ploss_Q1_prb"
+      SrcTerminal   1
+      DstComponent  "Ploss_Q1"
+      DstTerminal   1
+    }
+  }
+}

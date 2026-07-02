@@ -96,6 +96,43 @@ def _component(c, x: int, y: int) -> list[str]:
 
 
 
+def _heatsink(c, x: int, y: int) -> list[str]:
+    """A HeatSink is a rectangular region; any semiconductor whose symbol falls
+    inside ``frame`` dissipates its (datasheet) losses into this sink. PLECS
+    computes junction temperature / conduction / switching loss ONLY for devices
+    placed on an active heat sink — a wired thermal terminal is not enough.
+    The HeatPort (terminal 1) connects the sink to an ambient thermal network."""
+    fx0, fy0, fx1, fy1 = c.frame or [-30, -40, 30, 40]
+    params = dict(c.params) or {}
+    params.setdefault("Cth", "0")
+    params.setdefault("T_init", "")
+    params.setdefault("Width", "1")
+    out = [
+        "    Component {",
+        "      Type          HeatSink",
+        f'      Name          "{c.name}"',
+        "      Show          on",
+        f"      Position      [{x}, {y}]",
+        f"      Direction     {c.direction}",
+        f"      Flipped       {'on' if c.flipped else 'off'}",
+        "      LabelPosition south",
+        f"      Frame         [{fx0}, {fy0}; {fx1}, {fy1}]",
+    ]
+    out += _params(params)
+    # HeatPort above the frame, pointing up: the band above a converter's top
+    # rail is the most reliably empty area, so the sink-to-ambient thermal
+    # network routes there without crossing power wires.
+    out += [
+        "      Terminal {",
+        "        Type          HeatPort",
+        f"        Position      [0, {fy0 - 20}]",
+        "        Direction     up",
+        "      }",
+        "    }",
+    ]
+    return out
+
+
 def _subsystem(c, x: int, y: int) -> list[str]:
     sch = c.schematic or {}
     inner = [d if isinstance(d, Component) else Component(**d) for d in sch.get("components", [])]
@@ -215,8 +252,10 @@ def serialize(spec: CircuitSpec) -> str:
     L += _SOLVER
     L += [f'  InitializationCommands "{_esc(spec.init)}"']
     L += _TAIL
-    if spec.outputs or any(c.type == "Output" for c in spec.components):
-        L += ["  Terminal {", "    Type          Output", '    Index         "1"', "  }"]
+    out_indices = [int(o.index) for o in spec.outputs]
+    out_indices += [int(c.params.get("Index", "1")) for c in spec.components if c.type == "Output"]
+    for idx in sorted(set(out_indices)):
+        L += ["  Terminal {", "    Type          Output", f'    Index         "{idx}"', "  }"]
     L += [
         "  Schematic {",
         "    Location      [915, 288; 1725, 613]",
@@ -230,6 +269,8 @@ def serialize(spec: CircuitSpec) -> str:
         px, py = (c.position or [x, 100])
         if getattr(c, "schematic", None):
             L += _subsystem(c, px, py)
+        elif c.type == "HeatSink":
+            L += _heatsink(c, px, py)
         else:
             L += _component(c, px, py)
         x += 90

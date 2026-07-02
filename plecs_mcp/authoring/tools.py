@@ -31,7 +31,7 @@ def describe_type(type_name: str) -> dict:
 
 
 def build_model(spec: dict, out_dir: str | None = None, load: bool = True,
-                layout: str | None = None) -> dict:
+                layout: str | None = None, thermal: list | None = None) -> dict:
     try:
         s = CircuitSpec(**spec)
     except Exception as e:
@@ -46,14 +46,30 @@ def build_model(spec: dict, out_dir: str | None = None, load: bool = True,
             s = auto_layout(s)
         except Exception as e:
             return {"ok": False, "error": f"auto-layout failed: {e}; pass explicit positions or layout='manual'"}
+    # attach heat sinks + loss datasheets for thermal devices (needs positions)
+    loss_files: list = []
+    if thermal:
+        from .thermal import attach_heatsink
+        try:
+            s, loss_files = attach_heatsink(s, thermal)
+        except Exception as e:
+            return {"ok": False, "error": f"thermal attach failed: {e}"}
     text = serialize(s)
     d = out_dir or os.environ.get("PLECS_MCP_MODEL_DIR", tempfile.gettempdir())
     os.makedirs(d, exist_ok=True)
     path = os.path.join(d, f"{s.name}.plecs")
     with open(path, "w", encoding="utf-8") as f:
         f.write(text)
+    # loss datasheets live in the model's <name>_plecs/ resource folder
+    if loss_files:
+        resdir = os.path.join(d, f"{s.name}_plecs")
+        os.makedirs(resdir, exist_ok=True)
+        for nm, xml in loss_files:
+            with open(os.path.join(resdir, f"{nm}.xml"), "w", encoding="utf-8") as f:
+                f.write(xml)
     res: dict = {"ok": True, "model_name": s.name, "path": path,
-                 "n_components": len(s.components), "n_connections": len(s.connections)}
+                 "n_components": len(s.components), "n_connections": len(s.connections),
+                 "thermal_devices": [nm for nm, _ in loss_files]}
     if load:
         try:
             client.load(path)
@@ -90,7 +106,7 @@ def register_authoring_tools(mcp) -> None:
 
     @mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=False))
     def plecs_build_model(spec: dict, out_dir: str | None = None, load: bool = True,
-                          layout: str | None = None) -> dict:
+                          layout: str | None = None, thermal: list | None = None) -> dict:
         """Build a .plecs model from a structured spec, write it, and (by default)
         load it into PLECS to validate.
 
@@ -99,8 +115,15 @@ def register_authoring_tools(mcp) -> None:
         term], points: [[x,y],...], dsts: [[name, term] | [name, term, [[x,y]]]]}],
         outputs: [{name, probe_component, probe_signal, index, position}]}.
         Connectivity is symbolic (component name + terminal index). Omit positions to get
-        automatic two-rail layout (layout='manual' to keep your coordinates)."""
-        return build_model(spec, out_dir=out_dir, load=load, layout=layout)
+        automatic two-rail layout (layout='manual' to keep your coordinates).
+
+        thermal: optional list to make semiconductors lossy and read junction
+        temperature. Each entry {name: <device in spec>, sclass: 'MOSFET'|'IGBT'|
+        'Diode', ron, eon_mJ, eoff_mJ, rth, cth, v_test, i_max, rth_sink, t_amb}.
+        Each device is placed on a generated Heat Sink (required by PLECS to compute
+        losses) wired to an ambient network; a loss datasheet XML is written to
+        <name>_plecs/, and Tj + dissipated-power probes are added automatically."""
+        return build_model(spec, out_dir=out_dir, load=load, layout=layout, thermal=thermal)
 
     @mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True, idempotentHint=True))
     def plecs_validate_model(model_path: str) -> dict:
