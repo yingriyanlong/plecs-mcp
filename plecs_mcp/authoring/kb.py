@@ -17,6 +17,8 @@ _REF = Path(__file__).resolve().parent / "reference"
 
 CORE: dict[str, dict] = {
     "DCVoltageSource": {"domain": "electrical", "terminals": {1: "+", 2: "-"}, "params": {"V": "0"}},
+    "ACVoltageSource": {"domain": "electrical", "terminals": {1: "+", 2: "-"},
+                        "params": {"V": "1", "phi": "0", "w": "2*pi*50"}},
     "DCCurrentSource": {"domain": "electrical", "terminals": {1: "+", 2: "-"}, "params": {"I": "0"}},
     "Resistor": {"domain": "electrical", "terminals": {1: "a", 2: "b"}, "params": {"R": "1"}},
     "Inductor": {"domain": "electrical", "terminals": {1: "a", 2: "b"}, "params": {"L": "1e-3", "i_init": "0"}},
@@ -48,6 +50,14 @@ CORE: dict[str, dict] = {
     "HeatFlowMeter": {"domain": "thermal", "terminals": {1: "b", 2: "a"}, "params": {}},
     "HeatSink": {"domain": "thermal", "terminals": {1: "HeatPort"},
                  "params": {"Cth": "0", "T_init": "", "Width": "1"}},
+    # Magnetic domain (permeance/reluctance network). MagneticInterface = winding:
+    # terminals 1,2 electrical + 3,4 magnetic. Connections between magnetic
+    # terminals use kind "Magnetic". Inductance of a single winding on a permeance
+    # loop is L = n^2 * P.
+    "MagneticInterface": {"domain": "magnetic", "terminals": {1: "el+", 2: "el-", 3: "mag+", 4: "mag-"},
+                          "params": {"n": "1"}},
+    "MagneticPermeance": {"domain": "magnetic", "terminals": {1: "a", 2: "b"}, "params": {"P": "1e-6"}},
+    "MagneticResistance": {"domain": "magnetic", "terminals": {1: "a", 2: "b"}, "params": {"R": "1"}},
     "PlecsProbe": {"domain": "measurement", "terminals": {1: "out"}, "params": {}},
     "Input": {"domain": "io", "terminals": {1: "out"}, "params": {"Index": "1", "Width": "-1"}},
     "Output": {"domain": "io", "terminals": {1: "in"}, "params": {"Index": "1", "Width": "-1"}},

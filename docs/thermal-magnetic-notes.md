@@ -78,5 +78,32 @@ silently returns 0, not an error):
 Verified buck (48->24 V, 100 kHz, generated MOSFET datasheet): junction temp rises
 **25.0 -> 32.4 C**, total dissipation **~4.9 W**, over a 20 ms run.
 
-Still future: magnetic permeance-network authoring; multi-device shared heat sinks
-(today each thermal device gets its own sink + ambient network).
+Still future: multi-device shared heat sinks (today each thermal device gets its
+own sink + ambient network).
+
+## Update (2026-07-02): magnetic permeance-network authoring VERIFIED
+
+Magnetic circuits (the permeance / reluctance domain) are authorable directly —
+unlike thermal, this is **pure symbolic connectivity** with no geometric constraint.
+
+- **Components** (added to KB CORE):
+  - `MagneticInterface` = a **winding**. Terminals 1,2 electrical + 3,4 magnetic;
+    param `n` (turns).
+  - `MagneticPermeance` (param `P`) and `MagneticResistance` (param `R`) — the
+    magnetic-circuit elements. Terminals 1,2.
+  - `ACVoltageSource` (params `V`, `phi`, `w`) added for AC excitation.
+- **Connections** between magnetic terminals use `kind: "Magnetic"` (the serializer
+  passes any kind through as the connection `Type`; no code change was needed).
+- **Inductor**: one winding on a permeance loop -> `L = n^2 * P`. Verified via an
+  RL step (n=10, P=1e-3 -> L=0.1 H, R=10 -> tau=10 ms): i_final 0.9975 A,
+  measured L = tau*R = **0.0996 H** (expect 0.1). `golden_models/agent_magnetic_inductor`.
+- **Transformer**: two windings sharing one core permeance (single flux loop
+  W1(3)->Pc->W2(3), W2(4)->W1(4)) -> `V2/V1 = n2/n1`. Verified n1=10,n2=5:
+  **V2/V1 = 0.5000**. `golden_models/agent_transformer`.
+
+Author magnetic circuits with `plecs_build_model` using explicit `position`s and
+`layout="manual"` — the automatic two-rail layouter is power-circuit-focused and
+does not place magnetic loops (that generalisation is Project C).
+
+Still future: saturable/nonlinear cores and leakage-permeance templates; magnetic
+auto-layout.

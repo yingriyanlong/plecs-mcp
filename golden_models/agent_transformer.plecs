@@ -1,0 +1,287 @@
+Plecs {
+  Name          "agent_transformer"
+  Version       "4.7"
+  CircuitModel  "ContStateSpace"
+  StartTime     "0.0"
+  TimeSpan      "6e-3"
+  Timeout       ""
+  Solver        "radau"
+  MaxStep       "1e-6"
+  InitStep      "-1"
+  FixedStep     "1e-3"
+  Refine        "1"
+  ZCStepSize    "1e-9"
+  RelTol        "1e-3"
+  AbsTol        "-1"
+  TurnOnThreshold "1"
+  SyncFixedStepTasks "2"
+  UseSingleCommonBaseRate "2"
+  LossVariableLimitExceededMsg "3"
+  NegativeSwitchLossMsg "3"
+  DivisionByZeroMsg "2"
+  StiffnessDetectionMsg "2"
+  MaxConsecutiveZCs "1000"
+  AlgebraicLoopWithStateMachineMsg "2"
+  AssertionAction "1"
+  InitializationCommands "Vpk=10;\nw=2*pi*1000;\nn1=10;\nn2=5;\nPc=1e-2;\nRL=100;"
+  InitialState  "1"
+  SystemState   ""
+  TaskingMode   "1"
+  TaskConfigurations ""
+  CodeGenParameterInlining "2"
+  CodeGenFloatingPointFormat "2"
+  CodeGenAbsTimeUsageMsg "3"
+  CodeGenBaseName ""
+  CodeGenOutputDir ""
+  CodeGenExtraOpts ""
+  CodeGenTarget "Generic"
+  CodeGenTargetSettings ""
+  ExtendedMatrixPrecision "2"
+  MatrixSignificanceCheck "2"
+  EnableStateSpaceSplitting "2"
+  DisplayStateSpaceSplitting "1"
+  DiscretizationMethod "2"
+  ExternalModeSettings ""
+  AlgebraicLoopMethod "1"
+  AlgebraicLoopTolerance "1e-6"
+  ScriptsDialogGeometry ""
+  ScriptsDialogSplitterPos "0"
+  Terminal {
+    Type          Output
+    Index         "1"
+  }
+  Terminal {
+    Type          Output
+    Index         "2"
+  }
+  Schematic {
+    Location      [915, 288; 1725, 613]
+    ZoomFactor    1
+    SliderPosition [0, 0]
+    ShowBrowser   off
+    BrowserWidth  100
+    Component {
+      Type          ACVoltageSource
+      Name          "Vac"
+      Show          on
+      Position      [100, 180]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "V"
+        Value         "Vpk"
+        Show          off
+      }
+      Parameter {
+        Variable      "w"
+        Value         "w"
+        Show          off
+      }
+      Parameter {
+        Variable      "phi"
+        Value         "0"
+        Show          off
+      }
+    }
+    Component {
+      Type          MagneticInterface
+      Name          "W1"
+      Show          on
+      Position      [280, 180]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "n"
+        Value         "n1"
+        Show          off
+      }
+    }
+    Component {
+      Type          MagneticPermeance
+      Name          "Pc"
+      Show          on
+      Position      [430, 110]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "P"
+        Value         "Pc"
+        Show          off
+      }
+    }
+    Component {
+      Type          MagneticInterface
+      Name          "W2"
+      Show          on
+      Position      [580, 180]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "n"
+        Value         "n2"
+        Show          off
+      }
+    }
+    Component {
+      Type          Resistor
+      Name          "RL"
+      Show          on
+      Position      [720, 180]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "R"
+        Value         "RL"
+        Show          off
+      }
+    }
+    Component {
+      Type          Voltmeter
+      Name          "Vm1"
+      Show          on
+      Position      [200, 300]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+    }
+    Component {
+      Type          Voltmeter
+      Name          "Vm2"
+      Show          on
+      Position      [660, 300]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+    }
+    Component {
+      Type          Output
+      Name          "V1"
+      Show          on
+      Position      [200, 380]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Index"
+        Value         "1"
+        Show          off
+      }
+      Parameter {
+        Variable      "Width"
+        Value         "-1"
+        Show          off
+      }
+    }
+    Component {
+      Type          Output
+      Name          "V2"
+      Show          on
+      Position      [660, 380]
+      Direction     up
+      Flipped       off
+      LabelPosition south
+      Parameter {
+        Variable      "Index"
+        Value         "2"
+        Show          off
+      }
+      Parameter {
+        Variable      "Width"
+        Value         "-1"
+        Show          off
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "Vac"
+      SrcTerminal   1
+      Branch {
+        DstComponent  "W1"
+        DstTerminal   1
+      }
+      Branch {
+        DstComponent  "Vm1"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "Vac"
+      SrcTerminal   2
+      Branch {
+        DstComponent  "W1"
+        DstTerminal   2
+      }
+      Branch {
+        DstComponent  "Vm1"
+        DstTerminal   2
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "W2"
+      SrcTerminal   1
+      Branch {
+        DstComponent  "RL"
+        DstTerminal   1
+      }
+      Branch {
+        DstComponent  "Vm2"
+        DstTerminal   1
+      }
+    }
+    Connection {
+      Type          Wire
+      SrcComponent  "W2"
+      SrcTerminal   2
+      Branch {
+        DstComponent  "RL"
+        DstTerminal   2
+      }
+      Branch {
+        DstComponent  "Vm2"
+        DstTerminal   2
+      }
+    }
+    Connection {
+      Type          Magnetic
+      SrcComponent  "W1"
+      SrcTerminal   3
+      DstComponent  "Pc"
+      DstTerminal   1
+    }
+    Connection {
+      Type          Magnetic
+      SrcComponent  "Pc"
+      SrcTerminal   2
+      DstComponent  "W2"
+      DstTerminal   3
+    }
+    Connection {
+      Type          Magnetic
+      SrcComponent  "W2"
+      SrcTerminal   4
+      DstComponent  "W1"
+      DstTerminal   4
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Vm1"
+      SrcTerminal   3
+      DstComponent  "V1"
+      DstTerminal   1
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Vm2"
+      SrcTerminal   3
+      DstComponent  "V2"
+      DstTerminal   1
+    }
+  }
+}

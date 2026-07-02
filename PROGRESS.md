@@ -271,6 +271,24 @@ device-type-specific & case-sensitive (`"MOSFET junction temp"` etc.; a wrong
 string silently returns 0). Offline suite 36 passed, ruff clean. See
 docs/thermal-magnetic-notes.md.
 
-Remaining big projects: B magnetic permeance-network authoring; C control-diagram
-auto-layout (thermal networks currently use a fixed clear-band placement).
+## Big project B: magnetic permeance-network authoring (2026-07-02)
+Magnetic circuits are authorable — and unlike thermal, it's pure symbolic
+connectivity (no geometric constraint). Added to KB CORE: `MagneticInterface`
+(winding; terminals 1,2 electrical + 3,4 magnetic; param `n`), `MagneticPermeance`
+(`P`), `MagneticResistance` (`R`), `ACVoltageSource` (`V`,`phi`,`w`). Magnetic
+connections use `kind:"Magnetic"` — the serializer already passes any kind through
+as the connection `Type`, so no serializer change was needed.
+
+Verified on live PLECS 4.9.5 (both first try, exact):
+- Inductor (one winding on a permeance loop): **L = n^2*P**. RL step n=10, P=1e-3
+  -> L=0.1 H, R=10 -> tau=10 ms; measured i_final 0.9975 A, L=tau*R=**0.0996 H**.
+- Transformer (two windings, shared core, single flux loop): **V2/V1 = n2/n1**.
+  n1=10,n2=5 -> measured **V2/V1 = 0.5000**.
+
+golden_models: agent_magnetic_inductor, agent_transformer. Offline suite 39 passed,
+ruff clean. Magnetic circuits use layout="manual" (auto-layout is power-focused;
+generalising it is Project C).
+
+Remaining: C control-diagram / non-power-domain auto-layout (thermal networks use a
+fixed clear-band placement; magnetic circuits need manual positions).
   metrics, #7 subsystems, #8 thermal readout, #9 CI (2 & 4 skipped per request).
