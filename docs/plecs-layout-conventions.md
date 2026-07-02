@@ -39,6 +39,17 @@ drain = 1 (top), source = 2 (bottom), gate = 3; diode anode = 1, cathode = 2.
 - Measurements use `PlecsProbe` (references a component by name — no power wire),
   feeding an `Output` port.
 
+## Control / signal blocks: their own rail
+Control blocks (anything with no power-domain connection — no Wire/Magnetic/HeatPipe,
+e.g. `Constant`, `Sum`, `TransferFunction`, `Saturation`, `RelationalOperator`,
+`TriangleGenerator`, `Gain`, `CScript`) are placed on a dedicated **control rail at
+y=260**, below the ground rail. They are ordered left-to-right by **signal-flow depth**
+(longest-path layering over the Signal graph), with same-depth blocks stacked ~45 px
+apart. This keeps the power stage clean on the two-rail grid and lays the control
+chain out as a readable left-to-right pipeline (Vref -> Err -> PI -> Sat -> comparator).
+Signal wires stay symbolic (PLECS routes them). Classification is by domain, so any
+signal-only block lands on the rail without needing to be in a hardcoded list.
+
 ## Standard topologies: prefer the demos
 For any standard converter (buck, boost, buck-boost, cuk, sepic, flyback, forward,
 full/half bridge, LLC, dual-active-bridge, inverters, PFC, ...) the bundled demo is

@@ -18,6 +18,7 @@ from collections import deque
 from .spec import CircuitSpec, Connection
 
 TOP, MID, BOT = 95, 140, 185
+CTRL = 260  # control/signal rail: below the ground rail, clear of the power stage
 X0, DX = 60, 70
 
 _SOURCE = {"DCVoltageSource", "DCCurrentSource"}
@@ -62,6 +63,20 @@ def auto_layout(spec: CircuitSpec) -> CircuitSpec:
     wires = [c for c in spec.connections if c.kind == "Wire"]
     sigs = [c for c in spec.connections if c.kind != "Wire"]
 
+    # A control/signal block is one with NO power-domain connection (Wire /
+    # Magnetic / HeatPipe) — it lives purely in the signal domain (Sum, PI,
+    # Saturation, comparator, carrier, Constant ...). These get their own rail
+    # below the power circuit instead of being placed on the power rails.
+    _power_kinds = {"Wire", "Magnetic", "HeatPipe"}
+    domain_conn: set[str] = set()
+    for conn in spec.connections:
+        if conn.kind in _power_kinds:
+            domain_conn.add(conn.src[0])
+            for d in conn.dsts:
+                domain_conn.add(d[0])
+    ctrl_names = {c.name for c in comps if c.name not in domain_conn
+                  and c.type not in _SKIP and c.type not in ("Output", "PlecsProbe")}
+
     uf = _UF()
     for conn in wires:
         s = (conn.src[0], int(conn.src[1]))
@@ -88,7 +103,7 @@ def auto_layout(spec: CircuitSpec) -> CircuitSpec:
     # order non-ground nets by BFS from input net along series links (both ends non-ground)
     adj = {n: set() for n in nets}
     for c in comps:
-        if c.type in _SKIP or c.type in _CONTROL or c.type in _SOURCE:
+        if c.type in _SKIP or c.name in ctrl_names or c.type in _SOURCE:
             continue
         a, b = tnet(c.name, 1), tnet(c.name, 2)
         if a != gnd and b != gnd and a in adj and b in adj:
@@ -116,7 +131,7 @@ def auto_layout(spec: CircuitSpec) -> CircuitSpec:
         rs = [rank.get(tnet(c.name, t), 0) for t in (1, 2) if tnet(c.name, t) != gnd]
         return max(rs) if rs else 0
 
-    placeable = [c for c in comps if c.type not in _CONTROL and c.type not in _SKIP]
+    placeable = [c for c in comps if c.name not in ctrl_names and c.type not in _SKIP]
     placeable.sort(key=lambda c: (prim_rank(c), comps.index(c)))
     x_of = {c.name: X0 + i * DX for i, c in enumerate(placeable)}
     pin = {}
@@ -150,14 +165,36 @@ def auto_layout(spec: CircuitSpec) -> CircuitSpec:
                 pin[(c.name, 3)] = (x, MID + 35)
 
     rightmost = max(x_of.values(), default=X0)
-    for c in comps:
-        if c.type in _CONTROL:
-            tx = X0
-            for s in sigs:
-                if s.src[0] == c.name and s.dsts:
-                    tx = x_of.get(s.dsts[0][0], X0)
-            c.position, c.direction, c.flipped = [tx - 30, MID + 70], "right", False
-            pin[(c.name, 1)] = (tx - 10, MID + 70)
+    # control/signal blocks on their own rail below the power circuit, ordered
+    # left-to-right by signal-flow depth (longest path from the signal sources),
+    # stacking same-depth blocks vertically. Signal wires stay symbolic.
+    if ctrl_names:
+        cadj = {n: [] for n in ctrl_names}
+        indeg = {n: 0 for n in ctrl_names}
+        for s in sigs:
+            if s.src[0] in ctrl_names:
+                for d in s.dsts:
+                    if d[0] in ctrl_names:
+                        cadj[s.src[0]].append(d[0])
+                        indeg[d[0]] += 1
+        depth = {n: 0 for n in ctrl_names}
+        rem = dict(indeg)
+        dq = deque([n for n in ctrl_names if indeg[n] == 0])
+        while dq:
+            n = dq.popleft()
+            for m in cadj[n]:
+                depth[m] = max(depth[m], depth[n] + 1)
+                rem[m] -= 1
+                if rem[m] == 0:
+                    dq.append(m)
+        row_of: dict[int, int] = {}
+        for c in comps:
+            if c.name in ctrl_names:
+                lay = depth[c.name]
+                r = row_of.get(lay, 0)
+                row_of[lay] = r + 1
+                c.position, c.direction, c.flipped = [X0 + lay * DX, CTRL + r * 45], "right", False
+                pin[(c.name, 1)] = (X0 + lay * DX, CTRL + r * 45)
     px = rightmost + DX
     for c in comps:
         if c.type == "PlecsProbe":

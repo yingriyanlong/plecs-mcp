@@ -289,6 +289,25 @@ golden_models: agent_magnetic_inductor, agent_transformer. Offline suite 39 pass
 ruff clean. Magnetic circuits use layout="manual" (auto-layout is power-focused;
 generalising it is Project C).
 
-Remaining: C control-diagram / non-power-domain auto-layout (thermal networks use a
-fixed clear-band placement; magnetic circuits need manual positions).
+## Big project C: control-diagram auto-layout (2026-07-02)
+Fixed the "很乱" (messy) closed-loop schematics. Root cause: `auto_layout` only
+special-cased a hardcoded `_CONTROL` set; control blocks outside it (TransferFunction,
+Saturation, RelationalOperator, TriangleGenerator) fell through to power-rail
+placement and landed on the top rail (y=95), interleaved with the power stage.
+
+Fix (in `authoring/layout.py`): classify a control/signal block **by domain** — any
+component with no power-domain connection (Wire / Magnetic / HeatPipe). All such
+blocks now go on a dedicated **control rail at y=260**, ordered left-to-right by
+signal-flow depth (longest-path layering over the Signal graph), with same-depth
+blocks stacked. Power layout is unchanged.
+
+Verified: the closed-loop buck control chain is now a clean row
+Vref(60,260)->Err(130,260)->PI(200,260)->Sat(270,260)->Cmp(340,260) with Carrier at
+(60,305); power devices stay on the two-rail grid; no overlapping centers; and it
+still regulates **Vo=14.998 V**. golden_models/agent_buck_closedloop regenerated.
+Offline suite 40 passed, ruff clean.
+
+All three big projects (A semiconductor loss/Tj, B magnetics, C control layout) done.
+Future polish: magnetic auto-layout; multi-device shared heat sinks; explicit
+signal-wire routing (points) for very dense control diagrams.
   metrics, #7 subsystems, #8 thermal readout, #9 CI (2 & 4 skipped per request).

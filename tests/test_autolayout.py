@@ -31,3 +31,44 @@ def test_source_placed_leftmost():
     src = next(c for c in s.components if c.name == "VDCin")
     others = [c.position[0] for c in s.components if c.name != "VDCin" and c.position]
     assert src.position[0] <= min(others)
+
+
+def _closed_loop():
+    # buck + a signal-flow control chain (Vref -> Err -> Gain -> gate)
+    return CircuitSpec(name="cl", components=[
+        {"type": "DCVoltageSource", "name": "V", "params": {"V": "24"}},
+        {"type": "Mosfet", "name": "Q", "params": {"Ron": "1e-3"}},
+        {"type": "Diode", "name": "D", "params": {}},
+        {"type": "Inductor", "name": "L", "params": {"L": "1e-4"}},
+        {"type": "Capacitor", "name": "C", "params": {"C": "1e-4"}},
+        {"type": "Resistor", "name": "R", "params": {"R": "10"}},
+        {"type": "Voltmeter", "name": "Vm", "params": {}},
+        {"type": "Constant", "name": "Ref", "params": {"Value": "15"}},
+        {"type": "Sum", "name": "Err", "params": {"Inputs": "|+-"}},
+        {"type": "Gain", "name": "K", "params": {"K": "0.1"}},
+    ], connections=[
+        {"kind": "Wire", "src": ["V", 1], "dsts": [["Q", 1]]},
+        {"kind": "Wire", "src": ["Q", 2], "dsts": [["L", 1], ["D", 2]]},
+        {"kind": "Wire", "src": ["L", 2], "dsts": [["C", 1], ["R", 1], ["Vm", 1]]},
+        {"kind": "Wire", "src": ["C", 2], "dsts": [["R", 2], ["V", 2], ["D", 1], ["Vm", 2]]},
+        {"kind": "Signal", "src": ["Ref", 1], "dsts": [["Err", 2]]},
+        {"kind": "Signal", "src": ["Vm", 3], "dsts": [["Err", 3]]},
+        {"kind": "Signal", "src": ["Err", 1], "dsts": [["K", 1]]},
+        {"kind": "Signal", "src": ["K", 2], "dsts": [["Q", 3]]},
+    ])
+
+
+def test_control_blocks_on_dedicated_rail_in_flow_order():
+    s = auto_layout(_closed_loop())
+    pos = {c.name: c.position for c in s.components}
+    # control/signal blocks sit on a rail below the power stage (y>=260)...
+    for n in ("Ref", "Err", "K"):
+        assert pos[n][1] >= 260, f"{n} not on the control rail: {pos[n]}"
+    # ...power devices stay on the two-rail grid (y in {95,140,185})
+    for n in ("V", "Q", "L", "C", "R"):
+        assert pos[n][1] <= 185, f"{n} pushed off the power rails: {pos[n]}"
+    # signal-flow order left-to-right: Ref -> Err -> K
+    assert pos["Ref"][0] < pos["Err"][0] < pos["K"][0]
+    # no two components share a center
+    centers = [tuple(c.position) for c in s.components if c.position]
+    assert len(set(centers)) == len(centers)

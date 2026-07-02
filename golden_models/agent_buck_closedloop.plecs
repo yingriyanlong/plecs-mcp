@@ -3,7 +3,7 @@ Plecs {
   Version       "4.7"
   CircuitModel  "ContStateSpace"
   StartTime     "0.0"
-  TimeSpan      "3e-2"
+  TimeSpan      "20e-3"
   Timeout       ""
   Solver        "radau"
   MaxStep       "1e-6"
@@ -74,7 +74,7 @@ Plecs {
       Type          Mosfet
       Name          "FET1"
       Show          on
-      Position      [410, 95]
+      Position      [130, 95]
       Direction     left
       Flipped       off
       LabelPosition south
@@ -88,7 +88,7 @@ Plecs {
       Type          Diode
       Name          "D1"
       Show          on
-      Position      [480, 140]
+      Position      [200, 140]
       Direction     up
       Flipped       on
       LabelPosition south
@@ -107,7 +107,7 @@ Plecs {
       Type          Inductor
       Name          "L1"
       Show          on
-      Position      [550, 95]
+      Position      [270, 95]
       Direction     left
       Flipped       off
       LabelPosition south
@@ -121,7 +121,7 @@ Plecs {
       Type          Resistor
       Name          "Resr"
       Show          on
-      Position      [760, 95]
+      Position      [480, 95]
       Direction     left
       Flipped       off
       LabelPosition south
@@ -135,7 +135,7 @@ Plecs {
       Type          Capacitor
       Name          "C1"
       Show          on
-      Position      [830, 140]
+      Position      [550, 140]
       Direction     down
       Flipped       on
       LabelPosition south
@@ -149,7 +149,7 @@ Plecs {
       Type          Resistor
       Name          "R1"
       Show          on
-      Position      [620, 140]
+      Position      [340, 140]
       Direction     down
       Flipped       on
       LabelPosition south
@@ -163,7 +163,7 @@ Plecs {
       Type          Voltmeter
       Name          "Vm1"
       Show          on
-      Position      [690, 140]
+      Position      [410, 140]
       Direction     up
       Flipped       off
       LabelPosition south
@@ -172,7 +172,7 @@ Plecs {
       Type          Constant
       Name          "Vref"
       Show          on
-      Position      [30, 210]
+      Position      [60, 260]
       Direction     right
       Flipped       off
       LabelPosition south
@@ -191,7 +191,7 @@ Plecs {
       Type          Sum
       Name          "Err"
       Show          on
-      Position      [100, 210]
+      Position      [130, 260]
       Direction     right
       Flipped       off
       LabelPosition south
@@ -205,8 +205,8 @@ Plecs {
       Type          TransferFunction
       Name          "PI"
       Show          on
-      Position      [130, 95]
-      Direction     left
+      Position      [200, 260]
+      Direction     right
       Flipped       off
       LabelPosition south
       Parameter {
@@ -229,8 +229,8 @@ Plecs {
       Type          Saturation
       Name          "Sat"
       Show          on
-      Position      [200, 95]
-      Direction     left
+      Position      [270, 260]
+      Direction     right
       Flipped       off
       LabelPosition south
       Parameter {
@@ -248,8 +248,8 @@ Plecs {
       Type          TriangleGenerator
       Name          "Carrier"
       Show          on
-      Position      [270, 95]
-      Direction     left
+      Position      [60, 305]
+      Direction     right
       Flipped       off
       LabelPosition south
       Parameter {
@@ -277,8 +277,8 @@ Plecs {
       Type          RelationalOperator
       Name          "Cmp"
       Show          on
-      Position      [340, 95]
-      Direction     left
+      Position      [340, 260]
+      Direction     right
       Flipped       off
       LabelPosition south
       Parameter {
@@ -289,21 +289,21 @@ Plecs {
     }
     Component {
       Type          PlecsProbe
-      Name          "Out1_prb"
+      Name          "Vo_prb"
       Show          on
       Position      [1365, 100]
       Direction     right
       Flipped       off
       LabelPosition south
       Probe {
-        Component     "R1"
+        Component     "C1"
         Path          ""
-        Signals       {"Resistor voltage"}
+        Signals       {"Capacitor voltage"}
       }
     }
     Component {
       Type          Output
-      Name          "Out1"
+      Name          "Vo"
       Show          on
       Position      [1425, 100]
       Direction     right
@@ -326,7 +326,7 @@ Plecs {
       SrcTerminal   1
       Points        [60, 95]
       Branch {
-        Points        [385, 95]
+        Points        [105, 95]
         DstComponent  "FET1"
         DstTerminal   1
       }
@@ -335,14 +335,14 @@ Plecs {
       Type          Wire
       SrcComponent  "FET1"
       SrcTerminal   2
-      Points        [435, 95]
+      Points        [155, 95]
       Branch {
-        Points        [480, 95]
+        Points        [200, 95]
         DstComponent  "D1"
         DstTerminal   2
       }
       Branch {
-        Points        [525, 95]
+        Points        [245, 95]
         DstComponent  "L1"
         DstTerminal   1
       }
@@ -351,19 +351,19 @@ Plecs {
       Type          Wire
       SrcComponent  "L1"
       SrcTerminal   2
-      Points        [575, 95]
+      Points        [295, 95]
       Branch {
-        Points        [620, 95]
+        Points        [340, 95]
         DstComponent  "R1"
         DstTerminal   1
       }
       Branch {
-        Points        [690, 95]
+        Points        [410, 95]
         DstComponent  "Vm1"
         DstTerminal   1
       }
       Branch {
-        Points        [735, 95]
+        Points        [455, 95]
         DstComponent  "Resr"
         DstTerminal   1
       }
@@ -372,9 +372,9 @@ Plecs {
       Type          Wire
       SrcComponent  "Resr"
       SrcTerminal   2
-      Points        [785, 95]
+      Points        [505, 95]
       Branch {
-        Points        [830, 95]
+        Points        [550, 95]
         DstComponent  "C1"
         DstTerminal   1
       }
@@ -385,22 +385,22 @@ Plecs {
       SrcTerminal   2
       Points        [60, 185]
       Branch {
-        Points        [480, 185]
+        Points        [200, 185]
         DstComponent  "D1"
         DstTerminal   1
       }
       Branch {
-        Points        [620, 185]
+        Points        [340, 185]
         DstComponent  "R1"
         DstTerminal   2
       }
       Branch {
-        Points        [690, 185]
+        Points        [410, 185]
         DstComponent  "Vm1"
         DstTerminal   2
       }
       Branch {
-        Points        [830, 185]
+        Points        [550, 185]
         DstComponent  "C1"
         DstTerminal   2
       }
@@ -456,9 +456,9 @@ Plecs {
     }
     Connection {
       Type          Signal
-      SrcComponent  "Out1_prb"
+      SrcComponent  "Vo_prb"
       SrcTerminal   1
-      DstComponent  "Out1"
+      DstComponent  "Vo"
       DstTerminal   1
     }
   }
